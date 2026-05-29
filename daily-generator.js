@@ -40,41 +40,91 @@ const selectedPalette = PALETTES[0];
 
 console.log(`Today's Synthesized Prompt: "${prompt}"`);
 
-// Helper to make HTTPS requests to Hugging Face
-function callHuggingFace(prompt) {
-  return new Promise((resolve, reject) => {
-    const model = "stabilityai/stable-diffusion-xl-base-1.0";
-    const postData = JSON.stringify({ inputs: prompt });
-    
-    const options = {
-      hostname: 'api-inference.huggingface.co',
-      port: 443,
-      path: `/models/${model}`,
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${HF_API_KEY}`,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
+// Helper sleep function
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Helper to make HTTPS requests to Hugging Face with Retry & Cold Start handling
+async function callHuggingFace(prompt, retries = 5, delay = 8000) {
+  const model = "stabilityai/stable-diffusion-xl-base-1.0";
+  const postData = JSON.stringify({ inputs: prompt });
+
+  for (let i = 0; i < retries; i++) {
+    try {
+      console.log(`Contacting Hugging Face endpoint (Attempt ${i + 1}/${retries})...`);
+      
+      const result = await new Promise((resolve, reject) => {
+        const options = {
+          hostname: 'api-inference.huggingface.co',
+          port: 443,
+          path: `/models/${model}`,
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${HF_API_KEY}`,
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(postData)
+          }
+        };
+
+        const req = https.request(options, (res) => {
+          let resData = '';
+          
+          if (res.statusCode === 503) {
+            // Model is loading, read the body to see how long to wait
+            res.on('data', chunk => resData += chunk);
+            res.on('end', () => {
+              try {
+                const parsed = JSON.parse(resData);
+                resolve({ loading: true, estimated_time: parsed.estimated_time || 20 });
+              } catch (e) {
+                resolve({ loading: true, estimated_time: 20 });
+              }
+            });
+            return;
+          }
+
+          if (res.statusCode !== 200) {
+            res.on('data', chunk => resData += chunk);
+            res.on('end', () => reject(new Error(`API Error (${res.statusCode}): ${resData}`)));
+            return;
+          }
+
+          const chunks = [];
+          res.on('data', (chunk) => chunks.push(chunk));
+          res.on('end', () => resolve({ loading: false, buffer: Buffer.concat(chunks) }));
+        });
+
+        // Timeout request after 15 seconds to prevent hanging
+        req.setTimeout(15000, () => {
+          req.destroy(new Error("Request Timeout"));
+        });
+
+        req.on('error', (e) => reject(e));
+        req.write(postData);
+        req.end();
+      });
+
+      if (result.loading) {
+        const waitTime = Math.min(Math.max(Math.ceil(result.estimated_time), 10), 30);
+        console.log(`Model is currently loading on Hugging Face. Waiting for ${waitTime}s before retrying...`);
+        await sleep(waitTime * 1000);
+      } else {
+        return result.buffer;
       }
-    };
-    
-    const req = https.request(options, (res) => {
-      if (res.statusCode !== 200) {
-        let errData = '';
-        res.on('data', chunk => errData += chunk);
-        res.on('end', () => reject(new Error(`API Error (${res.statusCode}): ${errData}`)));
-        return;
+
+    } catch (err) {
+      console.warn(`Attempt ${i + 1} encountered an error: ${err.message}`);
+      if (i === retries - 1) {
+        throw err;
       }
       
-      const chunks = [];
-      res.on('data', (chunk) => chunks.push(chunk));
-      res.on('end', () => resolve(Buffer.concat(chunks)));
-    });
-    
-    req.on('error', (e) => reject(e));
-    req.write(postData);
-    req.end();
-  });
+      const currentDelay = delay * Math.pow(1.5, i); // Exponential backoff
+      console.log(`Network or server fault. Retrying in ${currentDelay / 1000}s...`);
+      await sleep(currentDelay);
+    }
+  }
+  throw new Error("Max retries reached. Hugging Face model failed to load.");
 }
 
 // Helper to send Telegram message
