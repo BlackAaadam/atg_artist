@@ -72,7 +72,7 @@ const DEFAULT_PREFERENCES = {
 const DEFAULT_SETTINGS = {
   mode: "mock", // "mock" | "huggingface" | "openai"
   apiKey: "",
-  model: "stabilityai/stable-diffusion-xl-base-1.0",
+  model: "black-forest-labs/FLUX.1-schnell",
   scheduleTime: "02:00",
   notifyTime: "08:00",
   telegramBotToken: "",

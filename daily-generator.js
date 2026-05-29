@@ -47,7 +47,7 @@ function sleep(ms) {
 
 // Helper to make HTTPS requests to Hugging Face with Retry & Cold Start handling
 async function callHuggingFace(prompt, retries = 5, delay = 8000) {
-  const model = "stabilityai/stable-diffusion-xl-base-1.0";
+  const model = "black-forest-labs/FLUX.1-schnell";
   const postData = JSON.stringify({ inputs: prompt });
 
   for (let i = 0; i < retries; i++) {
