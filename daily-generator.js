@@ -1,6 +1,6 @@
 // Aetheria Daily Art Generator for GitHub Actions (Node.js)
 // This script runs on the cloud, calls the Hugging Face API, saves the image,
-// appends the new record to mock-data.js, and pushes a Telegram alert.
+// appends the new record to mock-data.js, and pushes a Telegram/Discord alert.
 
 const fs = require('fs');
 const path = require('path');
@@ -22,23 +22,77 @@ const d = new Date();
 const todayStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const dateFormatted = d.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
 
-// Default Prompt configs (used in cloud generation)
-const DEFAULT_THEME = "A futuristic glass greenhouse floating in deep space, glowing cosmic stars, botanical fantasy";
-const STYLES = ["Studio Ghibli", "Cyberpunk Watercolor", "Cosmic Surrealism"];
-const PALETTES = ["Neon / High Contrast", "Vibrant / Warm", "Pastel / Cosmic"];
+// Load Configuration File (if it exists)
+let config = {
+  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"],
+  notifyTime: "08:00"
+};
 
-// Synthesize prompt (Cloud version)
-function synthesizePrompt() {
-  const chosenStyle = STYLES[Math.floor(Math.random() * STYLES.length)];
-  const chosenPalette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-  return `${DEFAULT_THEME}, rendered in ${chosenStyle} style, with a ${chosenPalette} color palette, whimsical, detailed, 8k resolution`;
+const configPath = path.join(__dirname, 'config.json');
+if (fs.existsSync(configPath)) {
+  try {
+    const loadedConfig = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    config = { ...config, ...loadedConfig };
+    console.log("Loaded custom configurations:", config);
+  } catch (err) {
+    console.warn("Failed to load config.json, using defaults:", err.message);
+  }
 }
 
-const prompt = synthesizePrompt();
-const selectedStyle = STYLES[0];
-const selectedPalette = PALETTES[0];
+// Sub-Projects metadata
+const SUB_PROJECTS = [
+  { id: "ui_ux", name: "UI/UX Design" },
+  { id: "line_sticker", name: "LINE Sticker" },
+  { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
+  { id: "abstract_illustration", name: "Abstract Illustration" }
+];
 
-console.log(`Today's Synthesized Prompt: "${prompt}"`);
+const DEFAULT_PROJECT_PREFS = {
+  ui_ux: {
+    theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
+    activeStyles: ["Line Art Illustration"],
+    activePalette: "Neon / High Contrast",
+    tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"]
+  },
+  line_sticker: {
+    theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
+    activeStyles: ["Studio Ghibli", "Line Art Illustration"],
+    activePalette: "Vibrant / Warm",
+    tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"]
+  },
+  aesthetic_landscape: {
+    theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
+    activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"]
+  },
+  abstract_illustration: {
+    theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
+    activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"]
+  }
+};
+
+// Synthesize prompt (Cloud version)
+function synthesizePrompt(prefs) {
+  const chosenStyle = prefs.activeStyles[Math.floor(Math.random() * prefs.activeStyles.length)] || "Digital Art";
+  const chosenPalette = prefs.activePalette || "Vibrant Colors";
+  const tagsStr = prefs.tags && prefs.tags.length > 0 ? prefs.tags.join(", ") : "";
+  
+  let parts = [
+    prefs.theme,
+    `rendered in ${chosenStyle} style`,
+    `with a ${chosenPalette} color palette`
+  ];
+  if (tagsStr) parts.push(tagsStr);
+  
+  return {
+    prompt: parts.join(", ").replace(/\s+/g, ' ').trim(),
+    style: chosenStyle,
+    palette: chosenPalette
+  };
+}
 
 // Helper sleep function
 function sleep(ms) {
@@ -46,9 +100,9 @@ function sleep(ms) {
 }
 
 // Helper to make HTTPS requests to Hugging Face with Retry & Cold Start handling
-async function callHuggingFace(prompt, retries = 5, delay = 8000) {
+async function callHuggingFace(promptText, retries = 5, delay = 8000) {
   const model = "black-forest-labs/FLUX.1-schnell";
-  const postData = JSON.stringify({ inputs: prompt });
+  const postData = JSON.stringify({ inputs: promptText });
 
   for (let i = 0; i < retries; i++) {
     try {
@@ -128,7 +182,7 @@ async function callHuggingFace(prompt, retries = 5, delay = 8000) {
 }
 
 // Helper to send Telegram message with photo attachment
-function sendTelegramMessage(imageBuffer, title, promptText) {
+function sendTelegramMessage(imageBuffer, title, promptText, projectName, styleName, paletteName) {
   if (!TG_BOT_TOKEN || !TG_CHAT_ID) {
     console.log("Telegram credentials missing. Skipping Telegram notification.");
     return Promise.resolve();
@@ -136,7 +190,7 @@ function sendTelegramMessage(imageBuffer, title, promptText) {
   
   return new Promise((resolve, reject) => {
     const boundary = '----TelegramBoundary' + Math.random().toString(36).substring(2);
-    const captionText = `🎨 *Aetheria Daily Art Journal* 🎨\n\nYour artwork for today has materialized!\n\n*Title:* ${title}\n*Style:* ${selectedStyle}\n*Prompt:* _${promptText}_`;
+    const captionText = `🎨 *Aetheria Daily Art Journal* 🎨\n\nYour artwork for today has materialized!\n\n*Project:* ${projectName}\n*Title:* ${title}\n*Style:* ${styleName}\n*Palette:* ${paletteName}\n*Prompt:* _${promptText}_`;
 
     const parts = [
       Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="chat_id"\r\n\r\n${TG_CHAT_ID}\r\n`),
@@ -182,7 +236,7 @@ function sendTelegramMessage(imageBuffer, title, promptText) {
   });
 }
 
-function sendDiscordNotification(imageBuffer, title, promptText) {
+function sendDiscordNotification(imageBuffer, title, promptText, projectName, styleName, paletteName) {
   if (!DISCORD_WEBHOOK_URL) {
     console.log("Discord Webhook URL missing. Skipping Discord notification.");
     return Promise.resolve();
@@ -192,10 +246,10 @@ function sendDiscordNotification(imageBuffer, title, promptText) {
     const boundary = '----AetheriaBoundary' + Math.random().toString(36).substring(2);
     
     const payloadJson = JSON.stringify({
-      content: "🎨 **Aetheria Daily Art Journal** 🎨\nYour daily masterpiece has materialized!",
+      content: `🎨 **Aetheria Daily Art Journal** 🎨\nYour daily masterpiece for **${projectName}** has materialized!`,
       embeds: [{
         title: title,
-        description: `**Style**: ${selectedStyle}\n**Palette**: ${selectedPalette}\n\n**Prompt**:\n*${promptText}*`,
+        description: `**Project**: ${projectName}\n**Style**: ${styleName}\n**Palette**: ${paletteName}\n\n**Prompt**:\n*${promptText}*`,
         color: 8542437, // Royal Purple (#8257E5)
         image: {
           url: "attachment://artwork.png"
@@ -250,63 +304,105 @@ function sendDiscordNotification(imageBuffer, title, promptText) {
 
 async function run() {
   try {
-    console.log("Connecting to Hugging Face...");
-    const buffer = await callHuggingFace(prompt);
+    const activeProjectsToRun = SUB_PROJECTS.filter(p => config.activeProjects.includes(p.id));
+    if (activeProjectsToRun.length === 0) {
+      console.log("No active projects found in configurations. Skipping daily generation.");
+      return;
+    }
     
-    // Ensure directory exists
+    console.log(`Generating artwork for ${activeProjectsToRun.length} active projects: ${activeProjectsToRun.map(p => p.name).join(", ")}`);
+    
+    // Ensure generations directory exists
     const gensDir = path.join(__dirname, 'assets', 'generations');
     if (!fs.existsSync(gensDir)) {
       fs.mkdirSync(gensDir, { recursive: true });
     }
     
-    const filename = `daily_${todayStr}.png`;
-    const localPath = path.join(gensDir, filename);
-    const relativePath = `assets/generations/${filename}`;
+    const errors = [];
     
-    fs.writeFileSync(localPath, buffer);
-    console.log(`Image saved successfully to: ${localPath}`);
-    
-    // Update mock-data.js so the web app history displays it
-    const mockDataPath = path.join(__dirname, 'mock-data.js');
-    let mockDataContent = fs.readFileSync(mockDataPath, 'utf8');
-    
-    const title = `Cosmic Growth #${todayStr.split('-').slice(1).join('')}`;
-    
-    const newEntry = {
-      id: `gen-${todayStr}`,
-      date: todayStr,
-      title: title,
-      prompt: prompt,
-      imagePath: relativePath,
-      style: selectedStyle,
-      palette: selectedPalette,
-      dateFormatted: dateFormatted
-    };
-    
-    // Insert new entry into window.MOCK_DATA array
-    const arrayMatch = mockDataContent.match(/window\.MOCK_DATA\s*=\s*\[([\s\S]*?)\];/);
-    if (arrayMatch) {
-      const itemsString = arrayMatch[1];
-      const entryString = `\n  ${JSON.stringify(newEntry, null, 4).replace(/\n/g, '\n  ')},`;
-      const updatedItems = entryString + itemsString;
-      mockDataContent = mockDataContent.replace(arrayMatch[0], `window.MOCK_DATA = [${updatedItems}];`);
-      fs.writeFileSync(mockDataPath, mockDataContent, 'utf8');
-      console.log("mock-data.js history registry updated successfully.");
-    } else {
-      console.warn("Could not parse window.MOCK_DATA in mock-data.js to append entry.");
+    for (const project of activeProjectsToRun) {
+      try {
+        console.log(`\n========================================`);
+        console.log(`Running Generation for Project: ${project.name}`);
+        console.log(`========================================`);
+        
+        const prefs = DEFAULT_PROJECT_PREFS[project.id];
+        const { prompt, style, palette } = synthesizePrompt(prefs);
+        console.log(`Synthesized Prompt: "${prompt}"`);
+        
+        console.log("Connecting to Hugging Face...");
+        const buffer = await callHuggingFace(prompt);
+        
+        // Save the image with project suffix to prevent collision
+        const filename = `daily_${project.id}_${todayStr}.png`;
+        const localPath = path.join(gensDir, filename);
+        const relativePath = `assets/generations/${filename}`;
+        
+        fs.writeFileSync(localPath, buffer);
+        console.log(`Image saved successfully to: ${localPath}`);
+        
+        // Update mock-data.js so the web app history displays it
+        const mockDataPath = path.join(__dirname, 'mock-data.js');
+        let mockDataContent = fs.readFileSync(mockDataPath, 'utf8');
+        
+        const projectNumHash = todayStr.split('-').slice(1).join('');
+        const title = `${project.name} #${projectNumHash}`;
+        
+        const newEntry = {
+          id: `gen-${project.id}-${todayStr}`,
+          project: project.id,
+          date: todayStr,
+          title: title,
+          prompt: prompt,
+          imagePath: relativePath,
+          style: style,
+          palette: palette,
+          dateFormatted: dateFormatted
+        };
+        
+        // Insert new entry into window.MOCK_DATA array
+        const arrayMatch = mockDataContent.match(/window\.MOCK_DATA\s*=\s*\[([\s\S]*?)\];/);
+        if (arrayMatch) {
+          const itemsString = arrayMatch[1];
+          const entryString = `\n  ${JSON.stringify(newEntry, null, 4).replace(/\n/g, '\n  ')},`;
+          const updatedItems = entryString + itemsString;
+          mockDataContent = mockDataContent.replace(arrayMatch[0], `window.MOCK_DATA = [${updatedItems}];`);
+          fs.writeFileSync(mockDataPath, mockDataContent, 'utf8');
+          console.log(`mock-data.js history registry updated successfully for ${project.name}.`);
+        } else {
+          console.warn(`Could not parse window.MOCK_DATA in mock-data.js to append entry for ${project.name}.`);
+        }
+        
+        // Send Notifications (Telegram & Discord)
+        console.log(`Sending Telegram push alerts for ${project.name}...`);
+        await sendTelegramMessage(buffer, title, prompt, project.name, style, palette);
+        
+        console.log(`Sending Discord push alerts for ${project.name}...`);
+        await sendDiscordNotification(buffer, title, prompt, project.name, style, palette);
+        
+        console.log(`Successfully completed generation for ${project.name}.`);
+        
+        // Wait 3 seconds between runs to prevent API spamming / rate limits
+        await sleep(3000);
+        
+      } catch (projectErr) {
+        console.error(`Generation failed for project ${project.name}:`, projectErr);
+        errors.push({ project: project.name, error: projectErr.message });
+      }
     }
     
-    // Send Notifications (Telegram & Discord)
-    console.log("Sending Telegram push alerts...");
-    await sendTelegramMessage(buffer, title, prompt);
-    
-    console.log("Sending Discord push alerts...");
-    await sendDiscordNotification(buffer, title, prompt);
-    
-    console.log("Process complete!");
+    if (errors.length > 0) {
+      console.error(`\nCompleted with ${errors.length} errors:`, errors);
+      if (errors.length === activeProjectsToRun.length) {
+        // If ALL active projects failed, exit with code 1
+        process.exit(1);
+      }
+    } else {
+      console.log("\nAll daily generations completed successfully!");
+    }
     
   } catch (err) {
-    console.error("Execution failed:", err);
+    console.error("Critical script error:", err);
     process.exit(1);
   }
 }

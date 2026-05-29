@@ -61,12 +61,42 @@ async function deleteImageBlob(id) {
 }
 
 // --- STATE MANAGEMENT ---
-const DEFAULT_PREFERENCES = {
-  theme: "Cyberpunk street scene with rainy atmosphere",
-  activeStyles: ["Studio Ghibli", "Cyberpunk Watercolor"],
-  activePalette: "Neon / High Contrast",
-  tags: ["cozy", "neon glow", "rainy", "highly detailed"],
-  excludedTags: ["ugly", "blurry", "deformed"]
+const SUB_PROJECTS = [
+  { id: "ui_ux", name: "UI/UX Design" },
+  { id: "line_sticker", name: "LINE Sticker" },
+  { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
+  { id: "abstract_illustration", name: "Abstract Illustration" }
+];
+
+const DEFAULT_PROJECT_PREFS = {
+  ui_ux: {
+    theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
+    activeStyles: ["Line Art Illustration"],
+    activePalette: "Neon / High Contrast",
+    tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"],
+    excludedTags: ["photorealistic", "blurry", "messy"]
+  },
+  line_sticker: {
+    theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
+    activeStyles: ["Studio Ghibli", "Line Art Illustration"],
+    activePalette: "Vibrant / Warm",
+    tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"],
+    excludedTags: ["shaded", "complex background", "photorealistic", "3d render"]
+  },
+  aesthetic_landscape: {
+    theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
+    activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"],
+    excludedTags: ["ugly", "deformed", "cyberpunk", "high contrast neon"]
+  },
+  abstract_illustration: {
+    theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
+    activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"],
+    excludedTags: ["ugly", "deformed", "real life"]
+  }
 };
 
 const DEFAULT_SETTINGS = {
@@ -76,15 +106,20 @@ const DEFAULT_SETTINGS = {
   scheduleTime: "02:00",
   notifyTime: "08:00",
   telegramBotToken: "",
-  telegramChatId: ""
+  telegramChatId: "",
+  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"]
 };
 
 let appState = {
-  preferences: { ...DEFAULT_PREFERENCES },
+  activeProject: "ui_ux",
+  projectPrefs: { ...DEFAULT_PROJECT_PREFS },
   settings: { ...DEFAULT_SETTINGS },
+  get preferences() {
+    return this.projectPrefs[this.activeProject];
+  },
   history: [], // Metadata stored in localStorage
   activeTab: "dashboard",
-  todayGeneration: null, // Today's generation metadata if it exists
+  todayGeneration: null, // Today's generation metadata for active project
   imageUrls: {} // Cache of objectUrls mapped from IndexedDB blobs
 };
 
@@ -93,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadDataFromStorage();
   await loadHistoryBlobs();
   setupNavigation();
+  populateProjectSelectors();
   setupPreferencesTab();
   setupSettingsTab();
   renderDashboard();
@@ -108,26 +144,131 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
+// Helper to populate sub-project select boxes across the app
+function populateProjectSelectors() {
+  const dashSelect = document.getElementById("dashboard-project-select");
+  const prefSelect = document.getElementById("preferences-project-select");
+  const galleryFilter = document.getElementById("gallery-project-filter");
+  
+  const optionsHtml = SUB_PROJECTS.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
+  
+  dashSelect.innerHTML = optionsHtml;
+  prefSelect.innerHTML = optionsHtml;
+  galleryFilter.innerHTML = `<option value="all">All Projects</option>` + optionsHtml;
+  
+  // Set default values
+  dashSelect.value = appState.activeProject;
+  prefSelect.value = appState.activeProject;
+  
+  // Bind change events
+  dashSelect.onchange = (e) => {
+    appState.activeProject = e.target.value;
+    prefSelect.value = e.target.value;
+    localStorage.setItem("aetheria_active_project", appState.activeProject);
+    
+    // Refresh today's generation metadata
+    updateTodayGenerationRef();
+    renderDashboard();
+  };
+  
+  prefSelect.onchange = (e) => {
+    appState.activeProject = e.target.value;
+    dashSelect.value = e.target.value;
+    localStorage.setItem("aetheria_active_project", appState.activeProject);
+    
+    // Refresh preferences UI inputs
+    setupPreferencesTab();
+    
+    // Refresh today's generation metadata
+    updateTodayGenerationRef();
+    renderDashboard();
+  };
+  
+  galleryFilter.onchange = () => {
+    renderGallery();
+  };
+}
+
+function updateTodayGenerationRef() {
+  const todayStr = getTodayString();
+  appState.todayGeneration = appState.history.find(item => item.date === todayStr && item.project === appState.activeProject) || null;
+}
+
 // Load preferences, settings, and metadata list from localStorage
 function loadDataFromStorage() {
-  const savedPrefs = localStorage.getItem("aetheria_prefs");
-  if (savedPrefs) appState.preferences = JSON.parse(savedPrefs);
+  const savedActiveProject = localStorage.getItem("aetheria_active_project");
+  if (savedActiveProject) appState.activeProject = savedActiveProject;
+
+  const savedProjectPrefs = localStorage.getItem("aetheria_project_prefs");
+  if (savedProjectPrefs) {
+    appState.projectPrefs = JSON.parse(savedProjectPrefs);
+  } else {
+    // Check if there is an old format single aetheria_prefs we can migrate
+    const savedPrefs = localStorage.getItem("aetheria_prefs");
+    if (savedPrefs) {
+      try {
+        const legacyPrefs = JSON.parse(savedPrefs);
+        // Migrate it to the current active project preference as starting point
+        appState.projectPrefs[appState.activeProject] = {
+          theme: legacyPrefs.theme || appState.projectPrefs[appState.activeProject].theme,
+          activeStyles: legacyPrefs.activeStyles || appState.projectPrefs[appState.activeProject].activeStyles,
+          activePalette: legacyPrefs.activePalette || appState.projectPrefs[appState.activeProject].activePalette,
+          tags: legacyPrefs.tags || appState.projectPrefs[appState.activeProject].tags,
+          excludedTags: legacyPrefs.excludedTags || appState.projectPrefs[appState.activeProject].excludedTags
+        };
+      } catch (e) {
+        console.error("Failed to migrate legacy preferences", e);
+      }
+    }
+  }
 
   const savedSettings = localStorage.getItem("aetheria_settings");
-  if (savedSettings) appState.settings = JSON.parse(savedSettings);
+  if (savedSettings) {
+    appState.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
+  }
 
   const savedHistory = localStorage.getItem("aetheria_history");
   if (savedHistory) {
-    appState.history = JSON.parse(savedHistory);
+    try {
+      appState.history = JSON.parse(savedHistory);
+      // Merge items from window.MOCK_DATA that are not present in localStorage history
+      let mergedCount = 0;
+      window.MOCK_DATA.forEach(mockItem => {
+        const exists = appState.history.some(h => h.id === mockItem.id);
+        if (!exists) {
+          appState.history.push(mockItem);
+          mergedCount++;
+        }
+      });
+      if (mergedCount > 0) {
+        appState.history.sort((a, b) => b.date.localeCompare(a.date));
+        localStorage.setItem("aetheria_history", JSON.stringify(appState.history));
+        console.log(`Merged ${mergedCount} new cloud-generated artworks from mock-data.js.`);
+      }
+    } catch (e) {
+      console.error("Error parsing history from storage, resetting to mock data.", e);
+      appState.history = [...window.MOCK_DATA];
+    }
   } else {
-    // Inject mock data if fresh install
     appState.history = [...window.MOCK_DATA];
     localStorage.setItem("aetheria_history", JSON.stringify(appState.history));
   }
   
-  // Check if we already have today's artwork generated
-  const todayStr = getTodayString();
-  appState.todayGeneration = appState.history.find(item => item.date === todayStr) || null;
+  // Backwards compatibility migration: ensure all items have a project key
+  appState.history.forEach(item => {
+    if (!item.project) {
+      // Guess project from style
+      if (item.style === "Studio Ghibli") {
+        item.project = "line_sticker";
+      } else if (item.style === "Cosmic Surrealism" || item.style === "Surrealism") {
+        item.project = "abstract_illustration";
+      } else {
+        item.project = "aesthetic_landscape";
+      }
+    }
+  });
+  
+  updateTodayGenerationRef();
 }
 
 // Convert IndexedDB stored blobs into ObjectURLs to display in browser
@@ -171,7 +312,7 @@ function getFormattedDate(dateStr) {
 // --- ADAPTIVE PROMPT GENERATOR ENGINE (FEEDBACK LOOP) ---
 function constructDailyPrompt() {
   const prefs = appState.preferences;
-  const history = appState.history;
+  const history = appState.history.filter(item => item.project === appState.activeProject);
   
   // 1. Analyze historical reviews to adjust weights
   let positiveKeywords = [];
@@ -235,7 +376,7 @@ function constructDailyPrompt() {
 // --- AUTOMATED ON-DEMAND SCHEDULER ---
 function checkDailySchedule() {
   const todayStr = getTodayString();
-  const alreadyGenerated = appState.history.some(item => item.date === todayStr);
+  const alreadyGenerated = appState.history.some(item => item.date === todayStr && item.project === appState.activeProject);
   
   if (!alreadyGenerated) {
     // Trigger desktop notification banner
@@ -493,6 +634,7 @@ async function triggerGeneration() {
       
       const newGen = {
         id: `gen-${todayStr}`,
+        project: appState.activeProject,
         date: todayStr,
         title: selectedPreset.title,
         prompt: prompt,
@@ -544,6 +686,7 @@ async function triggerGeneration() {
       
       const newGen = {
         id: id,
+        project: appState.activeProject,
         date: todayStr,
         title: "Ethereal Concept " + todayStr.split('-').slice(1).join('/'),
         prompt: prompt,
@@ -600,6 +743,7 @@ async function triggerGeneration() {
       
       const newGen = {
         id: id,
+        project: appState.activeProject,
         date: todayStr,
         title: "DALL-E Conceptual Art",
         prompt: prompt,
@@ -735,7 +879,7 @@ function submitReview() {
   const todayStr = getTodayString();
   
   // Find current day item and update values
-  const index = appState.history.findIndex(item => item.date === todayStr);
+  const index = appState.history.findIndex(item => item.date === todayStr && item.project === appState.activeProject);
   if (index !== -1) {
     appState.history[index].rating = selectedRating;
     appState.history[index].approved = selectedVerdict;
@@ -852,7 +996,7 @@ function renderPreferencesPromptPreview() {
   
   // Gather statistics from history
   const favorites = {};
-  appState.history.forEach(item => {
+  appState.history.filter(item => item.project === appState.activeProject).forEach(item => {
     if (item.rating && item.rating >= 4) {
       favorites[item.style] = (favorites[item.style] || 0) + 1;
     }
@@ -872,7 +1016,7 @@ function renderPreferencesPromptPreview() {
 }
 
 function savePreferences() {
-  localStorage.setItem("aetheria_prefs", JSON.stringify(appState.preferences));
+  localStorage.setItem("aetheria_project_prefs", JSON.stringify(appState.projectPrefs));
   showNotification("Preferences updated and saved to client database.");
 }
 
@@ -889,12 +1033,25 @@ function setupSettingsTab() {
   document.getElementById("settings-tg-bot-token").value = s.telegramBotToken;
   document.getElementById("settings-tg-chat-id").value = s.telegramChatId;
   
+  // Populate Active Projects checkboxes
+  const checkboxesContainer = document.getElementById("settings-active-projects-checkboxes");
+  checkboxesContainer.innerHTML = SUB_PROJECTS.map(proj => {
+    const isActive = s.activeProjects.includes(proj.id);
+    return `
+      <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem;">
+        <input type="checkbox" value="${proj.id}" class="settings-proj-checkbox" ${isActive ? 'checked' : ''}>
+        ${proj.name}
+      </label>
+    `;
+  }).join("");
+  
   // Toggle inputs visibility depending on mode selection
   toggleApiFormRow(s.mode);
   document.getElementById("settings-mode-select").onchange = (e) => {
     toggleApiFormRow(e.target.value);
   };
   
+  document.getElementById("btn-download-config").onclick = downloadConfigFile;
   document.getElementById("btn-save-settings").onclick = saveSettings;
   document.getElementById("btn-clear-database").onclick = clearAllDatabase;
 }
@@ -924,6 +1081,10 @@ function saveSettings() {
   appState.settings.telegramBotToken = document.getElementById("settings-tg-bot-token").value.trim();
   appState.settings.telegramChatId = document.getElementById("settings-tg-chat-id").value.trim();
   
+  // Extract checkboxes
+  const checkedBoxes = document.querySelectorAll(".settings-proj-checkbox:checked");
+  appState.settings.activeProjects = Array.from(checkedBoxes).map(cb => cb.value);
+  
   localStorage.setItem("aetheria_settings", JSON.stringify(appState.settings));
   showNotification("Configuration settings updated.");
   
@@ -951,15 +1112,22 @@ async function clearAllDatabase() {
 function renderGallery() {
   const grid = document.getElementById("gallery-grid");
   const filterVal = document.getElementById("gallery-rating-filter").value;
+  const projectFilter = document.getElementById("gallery-project-filter").value;
   
   let items = [...appState.history];
   
   // Sort by date descending
   items.sort((a, b) => b.date.localeCompare(a.date));
   
+  // Filter by rating
   if (filterVal !== "all") {
     const minStars = parseInt(filterVal);
     items = items.filter(item => item.rating >= minStars);
+  }
+  
+  // Filter by project
+  if (projectFilter !== "all") {
+    items = items.filter(item => item.project === projectFilter);
   }
   
   document.getElementById("gallery-rating-filter").onchange = renderGallery;
@@ -1120,4 +1288,24 @@ function downloadImage(title, src) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
+}
+
+// Download configuration JSON file for cloud actions sync
+function downloadConfigFile() {
+  const configObj = {
+    activeProjects: appState.settings.activeProjects,
+    notifyTime: appState.settings.notifyTime
+  };
+  const jsonStr = JSON.stringify(configObj, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "config.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showNotification("config.json file downloaded. Put it in your project folder to sync settings!");
 }
