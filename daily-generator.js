@@ -56,9 +56,9 @@ async function callHuggingFace(prompt, retries = 5, delay = 8000) {
       
       const result = await new Promise((resolve, reject) => {
         const options = {
-          hostname: 'api-inference.huggingface.co',
+          hostname: 'router.huggingface.co',
           port: 443,
-          path: `/models/${model}`,
+          path: `/hf-inference/models/${model}`,
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${HF_API_KEY}`,

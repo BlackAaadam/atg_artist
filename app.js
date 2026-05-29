@@ -515,7 +515,7 @@ async function triggerGeneration() {
       await sleep(1000);
       stepText.innerText = "Submitting Prompt to Hugging Face...";
       
-      const modelUrl = `https://api-inference.huggingface.co/models/${appState.settings.model}`;
+      const modelUrl = `https://router.huggingface.co/hf-inference/models/${appState.settings.model}`;
       
       const response = await fetch(modelUrl, {
         method: "POST",
