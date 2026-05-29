@@ -3,6 +3,16 @@
 
 window.MOCK_DATA = [
   {
+      "id": "gen-2026-05-29",
+      "date": "2026-05-29",
+      "title": "Cosmic Growth #0529",
+      "prompt": "A futuristic glass greenhouse floating in deep space, glowing cosmic stars, botanical fantasy, rendered in Studio Ghibli style, with a Vibrant / Warm color palette, whimsical, detailed, 8k resolution",
+      "imagePath": "assets/generations/daily_2026-05-29.png",
+      "style": "Studio Ghibli",
+      "palette": "Neon / High Contrast",
+      "dateFormatted": "May 29, 2026"
+  },
+  {
     id: "gen-2026-05-26",
     date: "2026-05-26",
     title: "Nostalgic Meadows",
