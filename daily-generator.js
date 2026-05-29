@@ -10,6 +10,7 @@ const https = require('https');
 const HF_API_KEY = process.env.HF_API_KEY;
 const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN;
 const TG_CHAT_ID = process.env.TG_CHAT_ID;
+const LINE_NOTIFY_TOKEN = process.env.LINE_NOTIFY_TOKEN;
 
 if (!HF_API_KEY) {
   console.error("Error: Missing HF_API_KEY environment variable.");
@@ -79,7 +80,7 @@ function callHuggingFace(prompt) {
 // Helper to send Telegram message
 function sendTelegramMessage(imagePath, title, promptText) {
   if (!TG_BOT_TOKEN || !TG_CHAT_ID) {
-    console.log("Telegram credentials missing. Skipping notification.");
+    console.log("Telegram credentials missing. Skipping Telegram notification.");
     return Promise.resolve();
   }
   
@@ -108,6 +109,61 @@ function sendTelegramMessage(imagePath, title, promptText) {
     
     req.on('error', (e) => reject(e));
     req.write(postData);
+    req.end();
+  });
+}
+
+function sendLineNotification(imageBuffer, title, promptText) {
+  if (!LINE_NOTIFY_TOKEN) {
+    console.log("LINE Notify token missing. Skipping LINE notification.");
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve, reject) => {
+    const boundary = '----AetheriaBoundary' + Math.random().toString(36).substring(2);
+    const messageText = `\n🎨 Aetheria Art Journal 🎨\n\nToday's daily artwork has materialized!\n\nTitle: ${title}\nStyle: ${selectedStyle}\nPrompt: ${promptText}`;
+
+    // Construct multipart form data body manually
+    const parts = [
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="message"\r\n\r\n${messageText}\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="imageFile"; filename="artwork.png"\r\nContent-Type: image/png\r\n\r\n`),
+      imageBuffer,
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ];
+
+    const body = Buffer.concat(parts);
+
+    const options = {
+      hostname: 'notify-api.line.me',
+      port: 443,
+      path: '/api/notify',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${LINE_NOTIFY_TOKEN}`,
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': body.length
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let resData = '';
+      res.on('data', chunk => resData += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          console.log("LINE Notify notification sent successfully.");
+        } else {
+          console.warn(`LINE Notify failed (${res.statusCode}): ${resData}`);
+        }
+        resolve();
+      });
+    });
+
+    req.on('error', (e) => {
+      console.error("LINE Notify request error:", e);
+      resolve(); // Don't crash the script if notifications fail
+    });
+
+    req.write(body);
     req.end();
   });
 }
@@ -160,9 +216,13 @@ async function run() {
       console.warn("Could not parse window.MOCK_DATA in mock-data.js to append entry.");
     }
     
-    // Send Telegram Notification
+    // Send Notifications (Telegram & LINE)
     console.log("Sending Telegram push alerts...");
     await sendTelegramMessage(relativePath, title, prompt);
+    
+    console.log("Sending LINE Notify push alerts...");
+    await sendLineNotification(buffer, title, prompt);
+    
     console.log("Process complete!");
     
   } catch (err) {

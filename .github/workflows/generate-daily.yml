@@ -29,6 +29,7 @@ jobs:
           HF_API_KEY: ${{ secrets.HF_API_KEY }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          LINE_NOTIFY_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
         run: node daily-generator.js
 
       # 4. Commit and Push the generated image and updated mock-data.js
