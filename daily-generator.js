@@ -127,38 +127,57 @@ async function callHuggingFace(prompt, retries = 5, delay = 8000) {
   throw new Error("Max retries reached. Hugging Face model failed to load.");
 }
 
-// Helper to send Telegram message
-function sendTelegramMessage(imagePath, title, promptText) {
+// Helper to send Telegram message with photo attachment
+function sendTelegramMessage(imageBuffer, title, promptText) {
   if (!TG_BOT_TOKEN || !TG_CHAT_ID) {
     console.log("Telegram credentials missing. Skipping Telegram notification.");
     return Promise.resolve();
   }
   
   return new Promise((resolve, reject) => {
-    const postData = JSON.stringify({
-      chat_id: TG_CHAT_ID,
-      text: `🎨 *Aetheria Daily Art Journal* 🎨\n\nYour artwork for today has materialized on the cloud!\n\n*Title:* ${title}\n*Style:* ${selectedStyle}\n*Prompt:* _${promptText}_\n\nCommit Hash: [View on GitHub Pages]`,
-      parse_mode: 'Markdown'
-    });
-    
+    const boundary = '----TelegramBoundary' + Math.random().toString(36).substring(2);
+    const captionText = `🎨 *Aetheria Daily Art Journal* 🎨\n\nYour artwork for today has materialized!\n\n*Title:* ${title}\n*Style:* ${selectedStyle}\n*Prompt:* _${promptText}_`;
+
+    const parts = [
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="chat_id"\r\n\r\n${TG_CHAT_ID}\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="caption"\r\n\r\n${captionText}\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="parse_mode"\r\n\r\nMarkdown\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="photo"; filename="artwork.png"\r\nContent-Type: image/png\r\n\r\n`),
+      imageBuffer,
+      Buffer.from(`\r\n--${boundary}--\r\n`)
+    ];
+
+    const body = Buffer.concat(parts);
+
     const options = {
       hostname: 'api.telegram.org',
       port: 443,
-      path: `/bot${TG_BOT_TOKEN}/sendMessage`,
+      path: `/bot${TG_BOT_TOKEN}/sendPhoto`,
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData)
+        'Content-Type': `multipart/form-data; boundary=${boundary}`,
+        'Content-Length': body.length
       }
     };
     
     const req = https.request(options, (res) => {
-      res.on('data', () => {});
-      res.on('end', () => resolve());
+      let resData = '';
+      res.on('data', chunk => resData += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          console.log("Telegram photo sent successfully.");
+        } else {
+          console.warn(`Telegram sendPhoto failed (${res.statusCode}): ${resData}`);
+        }
+        resolve();
+      });
     });
     
-    req.on('error', (e) => reject(e));
-    req.write(postData);
+    req.on('error', (e) => {
+      console.error("Telegram request error:", e);
+      resolve();
+    });
+    req.write(body);
     req.end();
   });
 }
@@ -279,7 +298,7 @@ async function run() {
     
     // Send Notifications (Telegram & Discord)
     console.log("Sending Telegram push alerts...");
-    await sendTelegramMessage(relativePath, title, prompt);
+    await sendTelegramMessage(buffer, title, prompt);
     
     console.log("Sending Discord push alerts...");
     await sendDiscordNotification(buffer, title, prompt);
