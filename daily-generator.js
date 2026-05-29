@@ -10,7 +10,7 @@ const https = require('https');
 const HF_API_KEY = process.env.HF_API_KEY;
 const TG_BOT_TOKEN = process.env.TG_BOT_TOKEN;
 const TG_CHAT_ID = process.env.TG_CHAT_ID;
-const LINE_NOTIFY_TOKEN = process.env.LINE_NOTIFY_TOKEN;
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 if (!HF_API_KEY) {
   console.error("Error: Missing HF_API_KEY environment variable.");
@@ -113,33 +113,44 @@ function sendTelegramMessage(imagePath, title, promptText) {
   });
 }
 
-function sendLineNotification(imageBuffer, title, promptText) {
-  if (!LINE_NOTIFY_TOKEN) {
-    console.log("LINE Notify token missing. Skipping LINE notification.");
+function sendDiscordNotification(imageBuffer, title, promptText) {
+  if (!DISCORD_WEBHOOK_URL) {
+    console.log("Discord Webhook URL missing. Skipping Discord notification.");
     return Promise.resolve();
   }
 
   return new Promise((resolve, reject) => {
     const boundary = '----AetheriaBoundary' + Math.random().toString(36).substring(2);
-    const messageText = `\n🎨 Aetheria Art Journal 🎨\n\nToday's daily artwork has materialized!\n\nTitle: ${title}\nStyle: ${selectedStyle}\nPrompt: ${promptText}`;
+    
+    const payloadJson = JSON.stringify({
+      content: "🎨 **Aetheria Daily Art Journal** 🎨\nYour daily masterpiece has materialized!",
+      embeds: [{
+        title: title,
+        description: `**Style**: ${selectedStyle}\n**Palette**: ${selectedPalette}\n\n**Prompt**:\n*${promptText}*`,
+        color: 8542437, // Royal Purple (#8257E5)
+        image: {
+          url: "attachment://artwork.png"
+        },
+        timestamp: new Date().toISOString()
+      }]
+    });
 
-    // Construct multipart form data body manually
     const parts = [
-      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="message"\r\n\r\n${messageText}\r\n`),
-      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="imageFile"; filename="artwork.png"\r\nContent-Type: image/png\r\n\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="payload_json"\r\nContent-Type: application/json\r\n\r\n${payloadJson}\r\n`),
+      Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="files[0]"; filename="artwork.png"\r\nContent-Type: image/png\r\n\r\n`),
       imageBuffer,
       Buffer.from(`\r\n--${boundary}--\r\n`)
     ];
 
     const body = Buffer.concat(parts);
 
+    const urlObj = new URL(DISCORD_WEBHOOK_URL);
     const options = {
-      hostname: 'notify-api.line.me',
+      hostname: urlObj.hostname,
       port: 443,
-      path: '/api/notify',
+      path: urlObj.pathname + urlObj.search,
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${LINE_NOTIFY_TOKEN}`,
         'Content-Type': `multipart/form-data; boundary=${boundary}`,
         'Content-Length': body.length
       }
@@ -149,18 +160,18 @@ function sendLineNotification(imageBuffer, title, promptText) {
       let resData = '';
       res.on('data', chunk => resData += chunk);
       res.on('end', () => {
-        if (res.statusCode === 200) {
-          console.log("LINE Notify notification sent successfully.");
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          console.log("Discord Webhook notification sent successfully.");
         } else {
-          console.warn(`LINE Notify failed (${res.statusCode}): ${resData}`);
+          console.warn(`Discord Webhook failed (${res.statusCode}): ${resData}`);
         }
         resolve();
       });
     });
 
     req.on('error', (e) => {
-      console.error("LINE Notify request error:", e);
-      resolve(); // Don't crash the script if notifications fail
+      console.error("Discord Webhook request error:", e);
+      resolve(); // Don't crash workflow if notification fails
     });
 
     req.write(body);
@@ -216,12 +227,12 @@ async function run() {
       console.warn("Could not parse window.MOCK_DATA in mock-data.js to append entry.");
     }
     
-    // Send Notifications (Telegram & LINE)
+    // Send Notifications (Telegram & Discord)
     console.log("Sending Telegram push alerts...");
     await sendTelegramMessage(relativePath, title, prompt);
     
-    console.log("Sending LINE Notify push alerts...");
-    await sendLineNotification(buffer, title, prompt);
+    console.log("Sending Discord push alerts...");
+    await sendDiscordNotification(buffer, title, prompt);
     
     console.log("Process complete!");
     
