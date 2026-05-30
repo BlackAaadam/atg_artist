@@ -262,7 +262,15 @@
                 </div>
               </div>
               
-              <div style="margin-top:1rem; display:flex; gap:1rem; align-items:center;">
+              <div class="form-group" style="margin-top: 1.5rem;">
+                <label for="settings-github-pat">GitHub Personal Access Token (PAT) — Optional</label>
+                <input type="password" class="input-styled" id="settings-github-pat" placeholder="ghp_... or github_pat_... (For automatic background sync to GitHub)">
+                <span style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem; display:block; line-height:1.4;">
+                  Enter a token to enable <strong>automatic background synchronization</strong>. Create a fine-grained token with <code>Contents: Write</code> permissions on your <code>atg_artist</code> repository.
+                </span>
+              </div>
+              
+              <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center;">
                 <button type="button" class="btn-utility" id="btn-download-config" style="padding:0.6rem 1.2rem; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem;">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
                   Download config.json

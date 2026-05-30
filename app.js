@@ -107,7 +107,8 @@ const DEFAULT_SETTINGS = {
   notifyTime: "08:00",
   telegramBotToken: "",
   telegramChatId: "",
-  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"]
+  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"],
+  githubPat: ""
 };
 
 let appState = {
@@ -1045,6 +1046,7 @@ function setupSettingsTab() {
   
   document.getElementById("settings-tg-bot-token").value = s.telegramBotToken;
   document.getElementById("settings-tg-chat-id").value = s.telegramChatId;
+  document.getElementById("settings-github-pat").value = s.githubPat || "";
   
   // Populate Active Projects checkboxes
   const checkboxesContainer = document.getElementById("settings-active-projects-checkboxes");
@@ -1097,9 +1099,15 @@ function saveSettings() {
   // Extract checkboxes
   const checkedBoxes = document.querySelectorAll(".settings-proj-checkbox:checked");
   appState.settings.activeProjects = Array.from(checkedBoxes).map(cb => cb.value);
+  appState.settings.githubPat = document.getElementById("settings-github-pat").value.trim();
   
   localStorage.setItem("aetheria_settings", JSON.stringify(appState.settings));
   showNotification("Configuration settings updated.");
+  
+  // Trigger background sync if GitHub Token is provided
+  if (appState.settings.githubPat) {
+    syncConfigToGitHub();
+  }
   
   // Refresh layout
   renderDashboard();
@@ -1321,4 +1329,72 @@ function downloadConfigFile() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showNotification("config.json file downloaded. Put it in your project folder to sync settings!");
+}
+
+// Synchronize configurations directly to your GitHub repository in the background
+async function syncConfigToGitHub() {
+  const token = appState.settings.githubPat;
+  if (!token) return;
+  
+  const owner = "BlackAaadam";
+  const repo = "atg_artist";
+  const filePath = "config.json";
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
+  
+  showNotification("Connecting to GitHub Cloud Database...");
+  
+  const configObj = {
+    activeProjects: appState.settings.activeProjects,
+    notifyTime: appState.settings.notifyTime
+  };
+  const jsonStr = JSON.stringify(configObj, null, 2);
+  const base64Content = btoa(unescape(encodeURIComponent(jsonStr))); // UTF-8 safe base64 encoding
+  
+  try {
+    // 1. Get file SHA if it exists
+    let sha = null;
+    try {
+      const getRes = await fetch(apiUrl, {
+        headers: {
+          "Authorization": `token ${token}`,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+      if (getRes.ok) {
+        const getJson = await getRes.json();
+        sha = getJson.sha;
+      }
+    } catch (e) {
+      console.log("No existing config.json found or fetch failed, creating new one.", e);
+    }
+    
+    // 2. Commit / Put the file
+    const body = {
+      message: "config: update active projects and notify time from browser settings",
+      content: base64Content
+    };
+    if (sha) body.sha = sha;
+    
+    const putRes = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        "Authorization": `token ${token}`,
+        "Content-Type": "application/json",
+        "Accept": "application/vnd.github.v3+json"
+      },
+      body: JSON.stringify(body)
+    });
+    
+    if (putRes.ok) {
+      showNotification("✨ Cloud settings synchronized to GitHub successfully!");
+      console.log("config.json updated directly in GitHub repo.");
+    } else {
+      const errorJson = await putRes.json();
+      throw new Error(errorJson.message || putRes.statusText);
+    }
+    
+  } catch (err) {
+    console.error("Failed to sync settings to GitHub:", err);
+    alert(`GitHub Sync Failed: ${err.message}\nMake sure your token is valid and has Write access to the repository contents.`);
+  }
 }
