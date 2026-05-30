@@ -324,7 +324,8 @@ const SUB_PROJECTS = [
   { id: "ui_ux", name: "UI/UX Design" },
   { id: "line_sticker", name: "LINE Sticker" },
   { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
-  { id: "abstract_illustration", name: "Abstract Illustration" }
+  { id: "abstract_illustration", name: "Abstract Illustration" },
+  { id: "quote_card_background", name: "Quote Card Background" }
 ];
 
 const DEFAULT_PROJECT_PREFS = {
@@ -355,6 +356,13 @@ const DEFAULT_PROJECT_PREFS = {
     activePalette: "Pastel / Cosmic",
     tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"],
     excludedTags: ["ugly", "deformed", "real life"]
+  },
+  quote_card_background: {
+    theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
+    activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "ugly", "deformed", "photorealistic", "busy composition"]
   }
 };
 
@@ -366,7 +374,7 @@ const DEFAULT_SETTINGS = {
   notifyTime: "08:00",
   telegramBotToken: "",
   telegramChatId: "",
-  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"],
+  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration", "quote_card_background"],
   githubPat: "",
   language: "en"
 };
@@ -904,6 +912,8 @@ async function triggerGeneration() {
         selectedPreset = { path: "assets/mock_line_sticker.png", style: "Studio Ghibli", title: "Happy Chibi Panda" };
       } else if (appState.activeProject === "aesthetic_landscape") {
         selectedPreset = { path: "assets/ghibli_countryside.png", style: "Oil Impressionism", title: "Nostalgic Meadows" };
+      } else if (appState.activeProject === "quote_card_background") {
+        selectedPreset = { path: "assets/quote_card_bg.png", style: "Cyberpunk Watercolor", title: "Abstract Pastel Canvas" };
       } else { // abstract_illustration
         selectedPreset = { path: "assets/cosmic_surrealism.png", style: "Cosmic Surrealism", title: "Astral Portal Canopy" };
       }

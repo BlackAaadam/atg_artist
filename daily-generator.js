@@ -24,7 +24,7 @@ const dateFormatted = d.toLocaleDateString("en-US", { month: 'short', day: 'nume
 
 // Load Configuration File (if it exists)
 let config = {
-  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration"],
+  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration", "quote_card_background"],
   notifyTime: "08:00"
 };
 
@@ -44,7 +44,8 @@ const SUB_PROJECTS = [
   { id: "ui_ux", name: "UI/UX Design" },
   { id: "line_sticker", name: "LINE Sticker" },
   { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
-  { id: "abstract_illustration", name: "Abstract Illustration" }
+  { id: "abstract_illustration", name: "Abstract Illustration" },
+  { id: "quote_card_background", name: "Quote Card Background" }
 ];
 
 const DEFAULT_PROJECT_PREFS = {
@@ -71,6 +72,12 @@ const DEFAULT_PROJECT_PREFS = {
     activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
     activePalette: "Pastel / Cosmic",
     tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"]
+  },
+  quote_card_background: {
+    theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
+    activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
+    activePalette: "Pastel / Cosmic",
+    tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"]
   }
 };
 

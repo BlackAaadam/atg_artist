@@ -54,6 +54,20 @@ window.MOCK_DATA = [
     approved: true,
     feedback: "Really interesting mix of cyberpunk and watercolor. The wet reflections look incredibly realistic. Maybe make the neon colors pop even more next time.",
     dateFormatted: "May 28, 2026"
+  },
+  {
+    id: "gen-quote_card_background-2026-05-25",
+    project: "quote_card_background",
+    date: "2026-05-25",
+    title: "Golden Hour Solitude",
+    prompt: "An artistic minimalist abstract background for a quote card, textured canvas, subtle golden and beige gradient color flow, copy space, elegant composition, high resolution, no text.",
+    imagePath: "assets/quote_card_bg.png",
+    style: "Oil Impressionism",
+    palette: "Pastel / Cosmic",
+    rating: 5,
+    approved: true,
+    feedback: "Perfect amount of negative space for adding text. The canvas texture looks high-quality.",
+    dateFormatted: "May 25, 2026"
   }
 ];
 
