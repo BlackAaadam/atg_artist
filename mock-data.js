@@ -3,27 +3,8 @@
 
 window.MOCK_DATA = [
   {
-      "id": "gen-2026-05-29",
-      "date": "2026-05-29",
-      "title": "Cosmic Growth #0529",
-      "prompt": "A futuristic glass greenhouse floating in deep space, glowing cosmic stars, botanical fantasy, rendered in Cyberpunk Watercolor style, with a Pastel / Cosmic color palette, whimsical, detailed, 8k resolution",
-      "imagePath": "assets/generations/daily_2026-05-29.png",
-      "style": "Studio Ghibli",
-      "palette": "Neon / High Contrast",
-      "dateFormatted": "May 29, 2026"
-  },
-  {
-      "id": "gen-2026-05-29",
-      "date": "2026-05-29",
-      "title": "Cosmic Growth #0529",
-      "prompt": "A futuristic glass greenhouse floating in deep space, glowing cosmic stars, botanical fantasy, rendered in Cosmic Surrealism style, with a Pastel / Cosmic color palette, whimsical, detailed, 8k resolution",
-      "imagePath": "assets/generations/daily_2026-05-29.png",
-      "style": "Studio Ghibli",
-      "palette": "Neon / High Contrast",
-      "dateFormatted": "May 29, 2026"
-  },
-  {
-      "id": "gen-2026-05-29",
+      "id": "gen-line_sticker-2026-05-29",
+      "project": "line_sticker",
       "date": "2026-05-29",
       "title": "Cosmic Growth #0529",
       "prompt": "A futuristic glass greenhouse floating in deep space, glowing cosmic stars, botanical fantasy, rendered in Studio Ghibli style, with a Vibrant / Warm color palette, whimsical, detailed, 8k resolution",
@@ -33,7 +14,8 @@ window.MOCK_DATA = [
       "dateFormatted": "May 29, 2026"
   },
   {
-    id: "gen-2026-05-26",
+    id: "gen-line_sticker-2026-05-26",
+    project: "line_sticker",
     date: "2026-05-26",
     title: "Nostalgic Meadows",
     prompt: "A lush green meadow under a bright blue sky with fluffy white clouds, in the style of Studio Ghibli. Rolling hills, wildflowers blooming, warm sunlight, nostalgic and heartwarming hand-drawn anime aesthetic.",
@@ -46,7 +28,8 @@ window.MOCK_DATA = [
     dateFormatted: "May 26, 2026"
   },
   {
-    id: "gen-2026-05-27",
+    id: "gen-abstract_illustration-2026-05-27",
+    project: "abstract_illustration",
     date: "2026-05-27",
     title: "Nebula Sentinel",
     prompt: "A beautiful surreal digital art of a giant glowing moon floating over a calm starry ocean, with a lone tree on a small island. Pastel purple and gold hues, whimsical, dreamy fantasy art, high resolution.",
@@ -59,7 +42,8 @@ window.MOCK_DATA = [
     dateFormatted: "May 27, 2026"
   },
   {
-    id: "gen-2026-05-28",
+    id: "gen-aesthetic_landscape-2026-05-28",
+    project: "aesthetic_landscape",
     date: "2026-05-28",
     title: "Neon Rain in Shinjuku",
     prompt: "A stunning, highly detailed watercolor painting of a rainy cyberpunk street in Tokyo. Neon reflections on wet pavement, soft glowing blue and pink lights, dreamy atmosphere, premium artistic style.",

@@ -624,16 +624,20 @@ async function triggerGeneration() {
       stepText.innerText = "Materializing artwork...";
       await sleep(1500);
       
-      // Grab a preset image based on rotation
-      const presets = [
-        { path: "assets/ghibli_countryside.png", style: "Studio Ghibli", title: "Valley of Wind" },
-        { path: "assets/cosmic_surrealism.png", style: "Cosmic Surrealism", title: "Astral Canopy" },
-        { path: "assets/cyberpunk_watercolor.png", style: "Cyberpunk Watercolor", title: "Cyber Monsoon" }
-      ];
-      const selectedPreset = presets[appState.history.length % presets.length];
+      // Select mock details matching the active project
+      let selectedPreset;
+      if (appState.activeProject === "ui_ux") {
+        selectedPreset = { path: "assets/mock_ui_ux.png", style: "Line Art Illustration", title: "Smart Dashboard Mockup" };
+      } else if (appState.activeProject === "line_sticker") {
+        selectedPreset = { path: "assets/mock_line_sticker.png", style: "Studio Ghibli", title: "Happy Chibi Panda" };
+      } else if (appState.activeProject === "aesthetic_landscape") {
+        selectedPreset = { path: "assets/ghibli_countryside.png", style: "Oil Impressionism", title: "Nostalgic Meadows" };
+      } else { // abstract_illustration
+        selectedPreset = { path: "assets/cosmic_surrealism.png", style: "Cosmic Surrealism", title: "Astral Portal Canopy" };
+      }
       
       const newGen = {
-        id: `gen-${todayStr}`,
+        id: `gen-${appState.activeProject}-${todayStr}`,
         project: appState.activeProject,
         date: todayStr,
         title: selectedPreset.title,
@@ -677,7 +681,7 @@ async function triggerGeneration() {
       imageBlob = await response.blob();
       
       // Save heavy blob into IndexedDB
-      const id = `gen-${todayStr}`;
+      const id = `gen-${appState.activeProject}-${todayStr}`;
       await saveImageBlob(id, imageBlob);
       
       // Cache URL
@@ -735,7 +739,7 @@ async function triggerGeneration() {
       const imageFetch = await fetch(imageUrl);
       imageBlob = await imageFetch.blob();
       
-      const id = `gen-${todayStr}`;
+      const id = `gen-${appState.activeProject}-${todayStr}`;
       await saveImageBlob(id, imageBlob);
       
       const objectUrl = URL.createObjectURL(imageBlob);
