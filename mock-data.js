@@ -77,7 +77,11 @@ window.MOCK_STYLES = [
   { name: "Cosmic Surrealism", category: "Art Styles", description: "Dreamlike cosmic landscapes and pastel nebula" },
   { name: "Minimalist Ink", category: "Art Styles", description: "High-contrast Japanese Zen wash paintings" },
   { name: "Oil Impressionism", category: "Art Styles", description: "Thick textured brushstrokes, focus on light play" },
-  { name: "Line Art Illustration", category: "Art Styles", description: "Clean black ink linework with flat color fills" }
+  { name: "Line Art Illustration", category: "Art Styles", description: "Clean black ink linework with flat color fills" },
+  { name: "Minimalist Editorial Photography", category: "Art Styles", description: "Clean, high-fashion layout with modern framing" },
+  { name: "Poetic Photo Essay", category: "Art Styles", description: "Nostalgic, emotive storytelling through raw photography" },
+  { name: "Japanese Magazine Layout", category: "Art Styles", description: "Asymmetric typography, negative space, and collage feel" },
+  { name: "Matte Paper Print", category: "Art Styles", description: "Soft, flat ink tones on heavy textured fine art paper" }
 ];
 
 window.MOCK_PALETTES = [
