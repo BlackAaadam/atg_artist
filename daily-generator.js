@@ -52,31 +52,31 @@ const DEFAULT_PROJECT_PREFS = {
   ui_ux: {
     theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
     activeStyles: ["Line Art Illustration"],
-    activePalette: "Neon / High Contrast",
+    activePalettes: ["Neon / High Contrast"],
     tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"]
   },
   line_sticker: {
     theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
     activeStyles: ["Studio Ghibli", "Line Art Illustration"],
-    activePalette: "Vibrant / Warm",
+    activePalettes: ["Vibrant / Warm"],
     tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"]
   },
   aesthetic_landscape: {
     theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
     activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"]
   },
   abstract_illustration: {
     theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
     activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"]
   },
   quote_card_background: {
     theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
     activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"]
   }
 };
@@ -84,7 +84,9 @@ const DEFAULT_PROJECT_PREFS = {
 // Synthesize prompt (Cloud version)
 function synthesizePrompt(prefs) {
   const chosenStyle = prefs.activeStyles[Math.floor(Math.random() * prefs.activeStyles.length)] || "Digital Art";
-  const chosenPalette = prefs.activePalette || "Vibrant Colors";
+  const chosenPalette = prefs.activePalettes && prefs.activePalettes.length > 0
+    ? prefs.activePalettes[Math.floor(Math.random() * prefs.activePalettes.length)]
+    : (prefs.activePalette || "Vibrant Colors");
   const tagsStr = prefs.tags && prefs.tags.length > 0 ? prefs.tags.join(", ") : "";
   
   let parts = [

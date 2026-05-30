@@ -89,5 +89,10 @@ window.MOCK_PALETTES = [
   { name: "Vibrant / Warm", colors: ["#ff9f43", "#ff6b6b", "#1dd1a1"] },
   { name: "Pastel / Cosmic", colors: ["#a29bfe", "#fd79a8", "#ffeaa7"] },
   { name: "Monochrome / Dark", colors: ["#2d3436", "#636e72", "#dfe6e9"] },
-  { name: "Earth / Forest", colors: ["#2e86de", "#10ac84", "#ff9f43"] }
+  { name: "Earth / Forest", colors: ["#2e86de", "#10ac84", "#ff9f43"] },
+  { name: "Ivory Paper / Muted Earth", colors: ["#FDFBF7", "#A89F91", "#5C5346"] },
+  { name: "Warm Paper / Forest Green", colors: ["#F9F6F0", "#859F84", "#1E3F20"] },
+  { name: "Soft Natural Editorial", colors: ["#EAE6DF", "#C2B29F", "#4A4641"] },
+  { name: "Matte Cream / Ink Gray", colors: ["#F5EFE6", "#686D76", "#191A19"] },
+  { name: "Devotional Neutral Palette", colors: ["#E6DFD3", "#B3A594", "#4E4337"] }
 ];

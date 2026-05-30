@@ -96,7 +96,7 @@ const TRANSLATIONS = {
     base_concept: "Base Creative Concept",
     theme_label: "Central Theme / Subject",
     focus_styles: "Focus Art Styles",
-    color_palettes: "Color Palettes",
+    color_palettes: "Color Palettes (Select Multiple)",
     keyword_tags: "Keyword Tags",
     style_cues: "Inject Style Cues",
     prompt_formula: "Active Prompt Preview Formula",
@@ -220,7 +220,7 @@ const TRANSLATIONS = {
     base_concept: "核心創作概念",
     theme_label: "中心主題 / 畫面主體",
     focus_styles: "專注藝術風格",
-    color_palettes: "配色方案",
+    color_palettes: "配色方案 (可複選)",
     keyword_tags: "關鍵字標籤",
     style_cues: "注入風格提示",
     prompt_formula: "當前提示詞公式預覽",
@@ -350,7 +350,7 @@ const DEFAULT_PROJECT_PREFS = {
   ui_ux: {
     theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
     activeStyles: ["Line Art Illustration"],
-    activePalette: "Neon / High Contrast",
+    activePalettes: ["Neon / High Contrast"],
     tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"],
     excludedTags: ["photorealistic", "blurry", "messy"],
     referenceImages: []
@@ -358,7 +358,7 @@ const DEFAULT_PROJECT_PREFS = {
   line_sticker: {
     theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
     activeStyles: ["Studio Ghibli", "Line Art Illustration"],
-    activePalette: "Vibrant / Warm",
+    activePalettes: ["Vibrant / Warm"],
     tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"],
     excludedTags: ["shaded", "complex background", "photorealistic", "3d render"],
     referenceImages: []
@@ -366,7 +366,7 @@ const DEFAULT_PROJECT_PREFS = {
   aesthetic_landscape: {
     theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
     activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"],
     excludedTags: ["ugly", "deformed", "cyberpunk", "high contrast neon"],
     referenceImages: []
@@ -374,7 +374,7 @@ const DEFAULT_PROJECT_PREFS = {
   abstract_illustration: {
     theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
     activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"],
     excludedTags: ["ugly", "deformed", "real life"],
     referenceImages: []
@@ -382,7 +382,7 @@ const DEFAULT_PROJECT_PREFS = {
   quote_card_background: {
     theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
     activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
-    activePalette: "Pastel / Cosmic",
+    activePalettes: ["Pastel / Cosmic"],
     tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"],
     excludedTags: ["text", "words", "letters", "signatures", "watermarks", "ugly", "deformed", "photorealistic", "busy composition"],
     referenceImages: []
@@ -504,10 +504,18 @@ function loadDataFromStorage() {
   const savedProjectPrefs = localStorage.getItem("aetheria_project_prefs");
   if (savedProjectPrefs) {
     appState.projectPrefs = JSON.parse(savedProjectPrefs);
-    // Initialize referenceImages array if missing (migration)
+    // Initialize referenceImages array and activePalettes if missing (migration)
     for (const projId in appState.projectPrefs) {
       if (!appState.projectPrefs[projId].referenceImages) {
         appState.projectPrefs[projId].referenceImages = [];
+      }
+      if (!appState.projectPrefs[projId].activePalettes) {
+        if (appState.projectPrefs[projId].activePalette) {
+          appState.projectPrefs[projId].activePalettes = [appState.projectPrefs[projId].activePalette];
+          delete appState.projectPrefs[projId].activePalette;
+        } else {
+          appState.projectPrefs[projId].activePalettes = [DEFAULT_PROJECT_PREFS[projId].activePalettes[0]];
+        }
       }
     }
   } else {
@@ -516,11 +524,12 @@ function loadDataFromStorage() {
     if (savedPrefs) {
       try {
         const legacyPrefs = JSON.parse(savedPrefs);
+        const legacyPal = legacyPrefs.activePalettes || (legacyPrefs.activePalette ? [legacyPrefs.activePalette] : ["Pastel / Cosmic"]);
         // Migrate it to the current active project preference as starting point
         appState.projectPrefs[appState.activeProject] = {
           theme: legacyPrefs.theme || appState.projectPrefs[appState.activeProject].theme,
           activeStyles: legacyPrefs.activeStyles || appState.projectPrefs[appState.activeProject].activeStyles,
-          activePalette: legacyPrefs.activePalette || appState.projectPrefs[appState.activeProject].activePalette,
+          activePalettes: legacyPal,
           tags: legacyPrefs.tags || appState.projectPrefs[appState.activeProject].tags,
           excludedTags: legacyPrefs.excludedTags || appState.projectPrefs[appState.activeProject].excludedTags
         };
@@ -659,7 +668,9 @@ function constructDailyPrompt() {
     ? prefs.activeStyles[Math.floor(Math.random() * prefs.activeStyles.length)] 
     : "Digital Painting";
     
-  const chosenPalette = prefs.activePalette || "Vibrant Colors";
+  const chosenPalette = prefs.activePalettes && prefs.activePalettes.length > 0 
+    ? prefs.activePalettes[Math.floor(Math.random() * prefs.activePalettes.length)] 
+    : "Vibrant Colors";
   
   const additionalTags = prefs.tags.filter(t => !negativeKeywords.includes(t));
   
@@ -942,6 +953,9 @@ async function triggerGeneration() {
     let imageBlob;
     let title = "Daily Dream " + todayStr.replace(/-/g, "/");
     let chosenStyle = appState.preferences.activeStyles[0] || "Digital Art";
+    let chosenPalette = appState.preferences.activePalettes && appState.preferences.activePalettes.length > 0
+      ? appState.preferences.activePalettes[Math.floor(Math.random() * appState.preferences.activePalettes.length)]
+      : "Vibrant Colors";
     
     if (appState.settings.mode === "mock") {
       // Simulation mode
@@ -971,7 +985,7 @@ async function triggerGeneration() {
         prompt: prompt,
         imagePath: selectedPreset.path,
         style: selectedPreset.style,
-        palette: appState.preferences.activePalette,
+        palette: chosenPalette,
         dateFormatted: dateFormatted
       };
       
@@ -1023,7 +1037,7 @@ async function triggerGeneration() {
         prompt: prompt,
         imagePath: `indexeddb://${id}`, // Flag pointing to IndexedDB storage
         style: chosenStyle,
-        palette: appState.preferences.activePalette,
+        palette: chosenPalette,
         dateFormatted: dateFormatted
       };
       
@@ -1080,7 +1094,7 @@ async function triggerGeneration() {
         prompt: prompt,
         imagePath: `indexeddb://${id}`,
         style: chosenStyle,
-        palette: appState.preferences.activePalette,
+        palette: chosenPalette,
         dateFormatted: dateFormatted
       };
       
@@ -1260,7 +1274,7 @@ function setupPreferencesTab() {
   // Render Palette cards
   const paletteGrid = document.getElementById("pref-palettes-grid");
   paletteGrid.innerHTML = window.MOCK_PALETTES.map(p => `
-    <div class="palette-card ${appState.preferences.activePalette === p.name ? 'active' : ''}" data-palette="${p.name}">
+    <div class="palette-card ${appState.preferences.activePalettes.includes(p.name) ? 'active' : ''}" data-palette="${p.name}">
       <div class="palette-colors-row">
         ${p.colors.map(col => `<div class="color-bar" style="background:${col}"></div>`).join("")}
       </div>
@@ -1270,9 +1284,18 @@ function setupPreferencesTab() {
   
   paletteGrid.querySelectorAll(".palette-card").forEach(card => {
     card.addEventListener("click", () => {
-      paletteGrid.querySelectorAll(".palette-card").forEach(c => c.classList.remove("active"));
-      appState.preferences.activePalette = card.getAttribute("data-palette");
-      card.classList.add("active");
+      const name = card.getAttribute("data-palette");
+      if (appState.preferences.activePalettes.includes(name)) {
+        if (appState.preferences.activePalettes.length > 1) {
+          appState.preferences.activePalettes = appState.preferences.activePalettes.filter(p => p !== name);
+          card.classList.remove("active");
+        } else {
+          showNotification(appState.settings.language === "zh" ? "請至少保留一個選中的配色方案。" : "Please keep at least one selected color palette.");
+        }
+      } else {
+        appState.preferences.activePalettes.push(name);
+        card.classList.add("active");
+      }
       renderPreferencesPromptPreview();
     });
   });
