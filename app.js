@@ -294,6 +294,15 @@ async function loadHistoryBlobs() {
   }
 }
 
+function saveOrUpdateHistory(newGen) {
+  const existingIndex = appState.history.findIndex(item => item.id === newGen.id);
+  if (existingIndex !== -1) {
+    appState.history[existingIndex] = newGen;
+  } else {
+    appState.history.unshift(newGen);
+  }
+}
+
 function saveHistory() {
   localStorage.setItem("aetheria_history", JSON.stringify(appState.history));
 }
@@ -648,7 +657,7 @@ async function triggerGeneration() {
         dateFormatted: dateFormatted
       };
       
-      appState.history.unshift(newGen);
+      saveOrUpdateHistory(newGen);
       appState.imageUrls[newGen.id] = selectedPreset.path;
       appState.todayGeneration = newGen;
       
@@ -700,7 +709,7 @@ async function triggerGeneration() {
         dateFormatted: dateFormatted
       };
       
-      appState.history.unshift(newGen);
+      saveOrUpdateHistory(newGen);
       appState.todayGeneration = newGen;
       
     } else if (appState.settings.mode === "openai") {
@@ -757,7 +766,7 @@ async function triggerGeneration() {
         dateFormatted: dateFormatted
       };
       
-      appState.history.unshift(newGen);
+      saveOrUpdateHistory(newGen);
       appState.todayGeneration = newGen;
     }
     
