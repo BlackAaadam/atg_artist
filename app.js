@@ -174,8 +174,17 @@ const TRANSLATIONS = {
     ai_prompt: "AI Prompt",
     style_label: "Style",
     palette_label: "Palette",
-    hf_token_label: "Hugging Face User Access Token",
-    openai_key_label: "OpenAI API Key"
+    openai_key_label: "OpenAI API Key",
+    reference_images_title: "Reference Images",
+    add_reference_label: "Add Reference Image (URL or Upload File)",
+    ref_url_placeholder: "Paste image URL here...",
+    ref_desc_placeholder: "Describe the style cues to reference (e.g., golden hour lighting, clean layout)...",
+    upload_btn: "Upload",
+    add_image_btn: "Add Image",
+    alert_ref_added: "Reference image added successfully!",
+    alert_ref_removed: "Reference image removed.",
+    alert_enter_ref: "Please provide an image URL or upload a file first.",
+    alert_enter_desc: "Please enter a style description for this reference image."
   },
   zh: {
     logo_subtitle: "AI 每日畫廊日誌",
@@ -289,8 +298,17 @@ const TRANSLATIONS = {
     ai_prompt: "AI 提示詞",
     style_label: "風格",
     palette_label: "配色",
-    hf_token_label: "Hugging Face 用戶存取金鑰 (Token)",
-    openai_key_label: "OpenAI API 金鑰 (Key)"
+    openai_key_label: "OpenAI API 金鑰 (Key)",
+    reference_images_title: "參考範例圖",
+    add_reference_label: "新增參考圖 (貼上網址或上傳本機圖檔)",
+    ref_url_placeholder: "貼上圖片網址...",
+    ref_desc_placeholder: "描述想要參考的風格特徵 (例如：黃昏光影、乾淨排版)...",
+    upload_btn: "上傳圖檔",
+    add_image_btn: "新增圖片",
+    alert_ref_added: "參考圖片已成功新增！",
+    alert_ref_removed: "參考圖片已移除。",
+    alert_enter_ref: "請先輸入圖片網址或上傳檔案。",
+    alert_enter_desc: "請輸入此參考圖的風格特徵描述。"
   }
 };
 
@@ -334,35 +352,40 @@ const DEFAULT_PROJECT_PREFS = {
     activeStyles: ["Line Art Illustration"],
     activePalette: "Neon / High Contrast",
     tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"],
-    excludedTags: ["photorealistic", "blurry", "messy"]
+    excludedTags: ["photorealistic", "blurry", "messy"],
+    referenceImages: []
   },
   line_sticker: {
     theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
     activeStyles: ["Studio Ghibli", "Line Art Illustration"],
     activePalette: "Vibrant / Warm",
     tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"],
-    excludedTags: ["shaded", "complex background", "photorealistic", "3d render"]
+    excludedTags: ["shaded", "complex background", "photorealistic", "3d render"],
+    referenceImages: []
   },
   aesthetic_landscape: {
     theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
     activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
     activePalette: "Pastel / Cosmic",
     tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"],
-    excludedTags: ["ugly", "deformed", "cyberpunk", "high contrast neon"]
+    excludedTags: ["ugly", "deformed", "cyberpunk", "high contrast neon"],
+    referenceImages: []
   },
   abstract_illustration: {
     theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
     activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
     activePalette: "Pastel / Cosmic",
     tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"],
-    excludedTags: ["ugly", "deformed", "real life"]
+    excludedTags: ["ugly", "deformed", "real life"],
+    referenceImages: []
   },
   quote_card_background: {
     theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
     activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
     activePalette: "Pastel / Cosmic",
     tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"],
-    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "ugly", "deformed", "photorealistic", "busy composition"]
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "ugly", "deformed", "photorealistic", "busy composition"],
+    referenceImages: []
   }
 };
 
@@ -389,7 +412,8 @@ let appState = {
   history: [], // Metadata stored in localStorage
   activeTab: "dashboard",
   todayGeneration: null, // Today's generation metadata for active project
-  imageUrls: {} // Cache of objectUrls mapped from IndexedDB blobs
+  imageUrls: {}, // Cache of objectUrls mapped from IndexedDB blobs
+  refImageUrls: {} // Cache of objectUrls mapped from IndexedDB reference images
 };
 
 // --- INITIALIZE APP ---
@@ -413,6 +437,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("new-tag-input").addEventListener("keypress", (e) => {
     if (e.key === "Enter") addNewTag();
   });
+  
+  // Reference images buttons
+  document.getElementById("btn-ref-image-upload").addEventListener("click", () => {
+    document.getElementById("ref-image-file-input").click();
+  });
+  document.getElementById("ref-image-file-input").addEventListener("change", handleRefImageUpload);
+  document.getElementById("btn-add-ref-image").addEventListener("click", handleAddReferenceImage);
 });
 
 // Helper to populate sub-project select boxes across the app
@@ -473,6 +504,12 @@ function loadDataFromStorage() {
   const savedProjectPrefs = localStorage.getItem("aetheria_project_prefs");
   if (savedProjectPrefs) {
     appState.projectPrefs = JSON.parse(savedProjectPrefs);
+    // Initialize referenceImages array if missing (migration)
+    for (const projId in appState.projectPrefs) {
+      if (!appState.projectPrefs[projId].referenceImages) {
+        appState.projectPrefs[projId].referenceImages = [];
+      }
+    }
   } else {
     // Check if there is an old format single aetheria_prefs we can migrate
     const savedPrefs = localStorage.getItem("aetheria_prefs");
@@ -647,6 +684,14 @@ function constructDailyPrompt() {
   // Tags
   if (additionalTags.length > 0) {
     promptParts.push(additionalTags.join(", "));
+  }
+  
+  // Reference images style descriptors
+  if (prefs.referenceImages && prefs.referenceImages.length > 0) {
+    const refDescs = prefs.referenceImages.map(img => img.description).filter(Boolean);
+    if (refDescs.length > 0) {
+      promptParts.push(`referencing style elements of ${refDescs.join(", ")}`);
+    }
   }
   
   // Concat and clean
@@ -1241,6 +1286,7 @@ function setupPreferencesTab() {
   
   renderActiveKeywords();
   renderPreferencesPromptPreview();
+  renderReferenceImages();
 }
 
 function renderActiveKeywords() {
@@ -1270,6 +1316,151 @@ function addNewTag() {
     input.value = "";
     renderActiveKeywords();
     renderPreferencesPromptPreview();
+  }
+}
+
+async function renderReferenceImages() {
+  const container = document.getElementById("pref-reference-images-list");
+  if (!container) return;
+  
+  const prefs = appState.preferences;
+  if (!prefs.referenceImages) prefs.referenceImages = [];
+  
+  // Clean up old object URLs from cache
+  Object.values(appState.refImageUrls).forEach(url => URL.revokeObjectURL(url));
+  appState.refImageUrls = {};
+  
+  // Render cards
+  const cardsHtmlPromises = prefs.referenceImages.map(async img => {
+    let src = "";
+    if (img.url) {
+      src = img.url;
+    } else if (img.id) {
+      // It is local, loaded from IndexedDB
+      const blobUrl = await getImageBlobUrl(img.id);
+      if (blobUrl) {
+        appState.refImageUrls[img.id] = blobUrl;
+        src = blobUrl;
+      } else {
+        src = "assets/cosmic_surrealism.png"; // Fallback if blob missing
+      }
+    }
+    
+    return `
+      <div class="reference-image-card" data-ref-id="${img.id}">
+        <img src="${src}" class="reference-image-thumb" alt="Reference Image">
+        <div class="reference-image-desc" title="${img.description}">${img.description}</div>
+        <button type="button" class="reference-image-delete" data-id="${img.id}">✕</button>
+      </div>
+    `;
+  });
+  
+  const cardsHtmlArray = await Promise.all(cardsHtmlPromises);
+  container.innerHTML = cardsHtmlArray.join("");
+  
+  // Bind delete actions
+  container.querySelectorAll(".reference-image-delete").forEach(btn => {
+    btn.onclick = async (e) => {
+      e.stopPropagation();
+      const id = btn.getAttribute("data-id");
+      
+      // Delete from preferences array
+      prefs.referenceImages = prefs.referenceImages.filter(img => img.id !== id);
+      
+      // Delete blob if in IndexedDB
+      if (id.startsWith("ref-img-")) {
+        await deleteImageBlob(id);
+      }
+      
+      showNotification(t("alert_ref_removed"));
+      
+      // Re-render and preview prompt update
+      renderReferenceImages();
+      renderPreferencesPromptPreview();
+    };
+  });
+}
+
+// Handle pasting an image URL and a description
+async function handleAddReferenceImage() {
+  const urlInput = document.getElementById("ref-image-url-input");
+  const descInput = document.getElementById("ref-image-desc-input");
+  
+  const url = urlInput.value.trim();
+  const desc = descInput.value.trim();
+  
+  if (!url) {
+    alert(t("alert_enter_ref"));
+    return;
+  }
+  if (!desc) {
+    alert(t("alert_enter_desc"));
+    return;
+  }
+  
+  const newRef = {
+    id: `ref-url-${Date.now()}`,
+    url: url,
+    description: desc
+  };
+  
+  if (!appState.preferences.referenceImages) {
+    appState.preferences.referenceImages = [];
+  }
+  
+  appState.preferences.referenceImages.push(newRef);
+  
+  // Reset fields
+  urlInput.value = "";
+  descInput.value = "";
+  
+  showNotification(t("alert_ref_added"));
+  renderReferenceImages();
+  renderPreferencesPromptPreview();
+}
+
+// Handle uploading a local reference file
+async function handleRefImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const descInput = document.getElementById("ref-image-desc-input");
+  const desc = descInput.value.trim();
+  
+  if (!desc) {
+    alert(t("alert_enter_desc"));
+    // Reset file input so they can trigger change event again
+    e.target.value = "";
+    return;
+  }
+  
+  // Convert file to blob and save to IndexedDB
+  const id = `ref-img-${appState.activeProject}-${Date.now()}`;
+  
+  try {
+    await saveImageBlob(id, file);
+    
+    const newRef = {
+      id: id,
+      description: desc
+    };
+    
+    if (!appState.preferences.referenceImages) {
+      appState.preferences.referenceImages = [];
+    }
+    
+    appState.preferences.referenceImages.push(newRef);
+    
+    // Reset fields
+    e.target.value = "";
+    descInput.value = "";
+    
+    showNotification(t("alert_ref_added"));
+    renderReferenceImages();
+    renderPreferencesPromptPreview();
+  } catch (err) {
+    console.error("Failed to save uploaded reference image blob:", err);
+    alert("Error uploading reference image: " + err.message);
   }
 }
 

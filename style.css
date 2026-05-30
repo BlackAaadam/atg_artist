@@ -1179,3 +1179,69 @@ footer {
   }
 }
 
+/* Reference Image Cards styling */
+.reference-image-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  height: 140px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.reference-image-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.reference-image-thumb {
+  width: 100%;
+  height: 95px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.reference-image-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  text-align: center;
+}
+
+.reference-image-delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 107, 107, 0.85);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.reference-image-card:hover .reference-image-delete {
+  opacity: 1;
+}
+
+.reference-image-delete:hover {
+  background: #ff4757;
+  transform: scale(1.15);
+}
+

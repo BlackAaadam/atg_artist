@@ -140,6 +140,33 @@
                 </div>
               </div>
               
+              <!-- Reference Images Section -->
+              <div style="border-top:1px dashed rgba(255,255,255,0.08); padding-top:1.5rem;">
+                <div class="pref-group-title">
+                  <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                  <span data-i18n="reference_images_title">Reference Images</span>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 0.75rem;">
+                  <label data-i18n="add_reference_label">Add Reference Image (URL or Upload File)</label>
+                  <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:0.25rem;">
+                    <div style="display:flex; gap:0.5rem;">
+                      <input type="text" class="input-styled" id="ref-image-url-input" style="flex:1" data-i18n-placeholder="ref_url_placeholder" placeholder="Paste image URL here...">
+                      <input type="file" id="ref-image-file-input" accept="image/*" style="display:none;">
+                      <button type="button" class="btn-utility" id="btn-ref-image-upload" style="padding:0.75rem 1rem; font-size:0.85rem;" data-i18n="upload_btn">Upload</button>
+                    </div>
+                    <div style="display:flex; gap:0.5rem;">
+                      <input type="text" class="input-styled" id="ref-image-desc-input" style="flex:1" data-i18n-placeholder="ref_desc_placeholder" placeholder="Describe the style cues to reference (e.g., golden hour lighting, clean layout)...">
+                      <button type="button" class="btn-primary" id="btn-add-ref-image" style="padding:0.75rem 1.25rem;" data-i18n="add_image_btn">Add Image</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="reference-images-grid" id="pref-reference-images-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr)); gap:0.75rem; margin-top:0.75rem; max-height:220px; overflow-y:auto; padding-right:0.25rem;">
+                  <!-- Reference image cards generated dynamically -->
+                </div>
+              </div>
+              
               <div class="prompt-composer-card" style="margin-top:auto;">
                 <div class="prompt-composer-title">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px; height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" /></svg>
