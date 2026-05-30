@@ -128,6 +128,7 @@ let appState = {
 document.addEventListener("DOMContentLoaded", async () => {
   loadDataFromStorage();
   await loadHistoryBlobs();
+  await syncSettingsFromConfigJson();
   setupNavigation();
   populateProjectSelectors();
   setupPreferencesTab();
@@ -1396,5 +1397,27 @@ async function syncConfigToGitHub() {
   } catch (err) {
     console.error("Failed to sync settings to GitHub:", err);
     alert(`GitHub Sync Failed: ${err.message}\nMake sure your token is valid and has Write access to the repository contents.`);
+  }
+}
+
+// Synchronize settings from deployed config.json back to the local browser
+async function syncSettingsFromConfigJson() {
+  try {
+    // Fetch with cache-buster parameter to guarantee loading the latest version
+    const res = await fetch("./config.json?t=" + Date.now());
+    if (res.ok) {
+      const gitConfig = await res.json();
+      if (gitConfig && Array.isArray(gitConfig.activeProjects)) {
+        appState.settings.activeProjects = gitConfig.activeProjects;
+      }
+      if (gitConfig && gitConfig.notifyTime) {
+        appState.settings.notifyTime = gitConfig.notifyTime;
+      }
+      // Save back to local storage
+      localStorage.setItem("aetheria_settings", JSON.stringify(appState.settings));
+      console.log("Successfully synchronized local settings from repository config.json!");
+    }
+  } catch (err) {
+    console.log("No config.json deployed or fetch failed, using local storage defaults.", err);
   }
 }
