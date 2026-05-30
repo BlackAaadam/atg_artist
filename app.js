@@ -1421,46 +1421,44 @@ async function handleAddReferenceImage() {
 
 // Handle uploading a local reference file
 async function handleRefImageUpload(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
   
   const descInput = document.getElementById("ref-image-desc-input");
-  const desc = descInput.value.trim();
+  const baseDesc = descInput.value.trim();
   
-  if (!desc) {
-    alert(t("alert_enter_desc"));
-    // Reset file input so they can trigger change event again
-    e.target.value = "";
-    return;
+  let successCount = 0;
+  for (const file of files) {
+    // Default description to filename (without extension) if none entered
+    const desc = baseDesc || file.name.split('.').slice(0, -1).join('.') || "Reference Image";
+    const randSuffix = Math.random().toString(36).substring(2, 7);
+    const id = `ref-img-${appState.activeProject}-${Date.now()}-${randSuffix}`;
+    
+    try {
+      await saveImageBlob(id, file);
+      const newRef = {
+        id: id,
+        description: desc
+      };
+      
+      if (!appState.preferences.referenceImages) {
+        appState.preferences.referenceImages = [];
+      }
+      appState.preferences.referenceImages.push(newRef);
+      successCount++;
+    } catch (err) {
+      console.error(`Failed to save reference image ${file.name}:`, err);
+    }
   }
   
-  // Convert file to blob and save to IndexedDB
-  const id = `ref-img-${appState.activeProject}-${Date.now()}`;
+  // Reset fields
+  e.target.value = "";
+  descInput.value = "";
   
-  try {
-    await saveImageBlob(id, file);
-    
-    const newRef = {
-      id: id,
-      description: desc
-    };
-    
-    if (!appState.preferences.referenceImages) {
-      appState.preferences.referenceImages = [];
-    }
-    
-    appState.preferences.referenceImages.push(newRef);
-    
-    // Reset fields
-    e.target.value = "";
-    descInput.value = "";
-    
+  if (successCount > 0) {
     showNotification(t("alert_ref_added"));
     renderReferenceImages();
     renderPreferencesPromptPreview();
-  } catch (err) {
-    console.error("Failed to save uploaded reference image blob:", err);
-    alert("Error uploading reference image: " + err.message);
   }
 }
 
