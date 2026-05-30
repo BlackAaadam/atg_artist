@@ -1516,6 +1516,10 @@ function renderPreferencesPromptPreview() {
 function savePreferences() {
   localStorage.setItem("aetheria_project_prefs", JSON.stringify(appState.projectPrefs));
   showNotification(t("alert_pref_saved"));
+  
+  if (appState.settings.githubPat) {
+    syncConfigToGitHub();
+  }
 }
 
 // --- SETTINGS PANEL RENDERER ---
@@ -1837,7 +1841,8 @@ async function syncConfigToGitHub() {
   
   const configObj = {
     activeProjects: appState.settings.activeProjects,
-    notifyTime: appState.settings.notifyTime
+    notifyTime: appState.settings.notifyTime,
+    projectPrefs: appState.projectPrefs
   };
   const jsonStr = JSON.stringify(configObj, null, 2);
   const base64Content = btoa(unescape(encodeURIComponent(jsonStr))); // UTF-8 safe base64 encoding

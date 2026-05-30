@@ -335,7 +335,9 @@ async function run() {
         console.log(`Running Generation for Project: ${project.name}`);
         console.log(`========================================`);
         
-        const prefs = DEFAULT_PROJECT_PREFS[project.id];
+        const prefs = (config.projectPrefs && config.projectPrefs[project.id]) 
+          ? config.projectPrefs[project.id] 
+          : DEFAULT_PROJECT_PREFS[project.id];
         const { prompt, style, palette } = synthesizePrompt(prefs);
         console.log(`Synthesized Prompt: "${prompt}"`);
         
