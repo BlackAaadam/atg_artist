@@ -23,7 +23,7 @@
         <div class="logo-icon">Æ</div>
         <div class="logo-text">
           <h1>Aetheria</h1>
-          <p>AI Daily Art Journal</p>
+          <p data-i18n="logo_subtitle">AI Daily Art Journal</p>
         </div>
       </div>
       <nav aria-label="Main Navigation">
@@ -31,25 +31,25 @@
           <li class="active" data-tab="dashboard">
             <button id="nav-btn-dashboard">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" /></svg>
-              Dashboard
+              <span data-i18n="nav_dashboard">Dashboard</span>
             </button>
           </li>
           <li data-tab="preferences">
             <button id="nav-btn-preferences">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-3.078 0L3.738 17.5a.75.75 0 01-1.088-.858l1.214-5.816a3 3 0 00-.733-2.582L.616 6.13a.75.75 0 01.416-1.28l5.833-.85a3 3 0 002.261-1.64l2.61-5.27a.75.75 0 011.36 0l2.61 5.27a3 3 0 002.262 1.64l5.833.85a.75.75 0 01.416 1.28l-4.216 4.116a3 3 0 00-.733 2.582l1.214 5.816a.75.75 0 01-1.088.859l-2.714-1.378a3 3 0 00-3.078 0L9.53 16.122z" /></svg>
-              Preferences
+              <span data-i18n="nav_preferences">Preferences</span>
             </button>
           </li>
           <li data-tab="gallery">
             <button id="nav-btn-gallery">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
-              Timeline
+              <span data-i18n="nav_timeline">Timeline</span>
             </button>
           </li>
           <li data-tab="settings">
             <button id="nav-btn-settings">
               <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0m-15 0a7.5 7.5 0 1115 0m-15 0H3m16.5 0H21m-1.5 0a7.5 7.5 0 00-15 0m1.5 0a7.5 7.5 0 1115 0M8.25 12a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0z" /></svg>
-              Settings
+              <span data-i18n="nav_settings">Settings</span>
             </button>
           </li>
         </ul>
@@ -63,14 +63,14 @@
       <section id="dashboard-tab" class="tab-content active" aria-labelledby="nav-btn-dashboard">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
           <div style="display:flex; align-items:center; gap:1rem;">
-            <h2 class="font-title" style="font-size:1.8rem; font-weight:800;">Today's Creation</h2>
+            <h2 class="font-title" style="font-size:1.8rem; font-weight:800;" data-i18n="today_title">Today's Creation</h2>
             <select class="select-styled" id="dashboard-project-select" style="padding:0.4rem 1rem; font-size:0.9rem; font-weight:700; border-color:var(--accent-purple);">
               <!-- Options populated dynamically -->
             </select>
           </div>
           <button class="btn-primary" id="btn-generate-today">
             <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-            Trigger Daily Generate
+            <span data-i18n="trigger_btn">Trigger Daily Generate</span>
           </button>
         </div>
         <div class="dashboard-grid" id="dashboard-container">
@@ -81,7 +81,7 @@
       <!-- 2. PREFERENCES TAB -->
       <section id="preferences-tab" class="tab-content" aria-labelledby="nav-btn-preferences">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-          <h2 class="font-title" style="font-size:1.8rem; font-weight:800;">Artistic Persona Preferences</h2>
+          <h2 class="font-title" style="font-size:1.8rem; font-weight:800;" data-i18n="pref_title">Artistic Persona Preferences</h2>
           <select class="select-styled" id="preferences-project-select" style="padding:0.4rem 1rem; font-size:0.9rem; font-weight:700; border-color:var(--accent-cyan);">
             <!-- Options populated dynamically -->
           </select>
@@ -92,10 +92,10 @@
             <div class="glass-card">
               <div class="pref-group-title">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 21l8.982-8.982m-8.982 3.886l5.771-5.771m0 0L19 4.018l-9 9m9-9l-8.982 8.982" /></svg>
-                Base Creative Concept
+                <span data-i18n="base_concept">Base Creative Concept</span>
               </div>
               <div class="form-group">
-                <label for="pref-theme-input">Central Theme / Subject</label>
+                <label for="pref-theme-input" data-i18n="theme_label">Central Theme / Subject</label>
                 <textarea class="textarea-styled" id="pref-theme-input" style="min-height:90px;" placeholder="E.g., A futuristic tea house inside a giant glowing glass greenhouse in space"></textarea>
               </div>
             </div>
@@ -103,7 +103,7 @@
             <div class="glass-card">
               <div class="pref-group-title">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581a2.25 2.25 0 003.181 0l5.141-5.141a2.25 2.25 0 000-3.181l-9.58-9.581A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" /></svg>
-                Focus Art Styles
+                <span data-i18n="focus_styles">Focus Art Styles</span>
               </div>
               <div class="tags-list" id="pref-styles-list">
                 <!-- Tag buttons generated by JS -->
@@ -113,7 +113,7 @@
             <div class="glass-card">
               <div class="pref-group-title">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M4.098 19.902a3.75 3.75 0 015.304 0l6.401-6.402M4.098 19.902l9.758-9.758M18.75 9l-3.75-3.75M11.45 13H2.25m9.2 0l-1.84 1.84m1.84-1.84L9.61 11.16m12.14-5.41l-2.12-2.12a1.5 1.5 0 00-2.12 0L6.22 14.94a1.5 1.5 0 00-.44 1.06v2.12a1.5 1.5 0 001.5 1.5h2.12a1.5 1.5 0 001.06-.44l11.31-11.31a1.5 1.5 0 000-2.12z" /></svg>
-                Color Palettes
+                <span data-i18n="color_palettes">Color Palettes</span>
               </div>
               <div class="palette-cards-grid" id="pref-palettes-grid">
                 <!-- Color cards generated dynamically -->
@@ -126,10 +126,10 @@
               <div>
                 <div class="pref-group-title">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.864 4.243A4 4 0 0111 3c.994 0 1.93.36 2.657 1.012a4 4 0 011.013 2.657v6.662A4 4 0 0113.657 16c-.994 0-1.93-.36-2.657-1.012a4 4 0 01-1.013-2.657V4.243zM3 10h3v4H3v-4zm15 0h3v4h-3v-4z" /></svg>
-                  Keyword Tags
+                  <span data-i18n="keyword_tags">Keyword Tags</span>
                 </div>
                 <div class="form-group" style="margin-bottom: 1rem;">
-                  <label for="new-tag-input">Inject Style Cues</label>
+                  <label for="new-tag-input" data-i18n="style_cues">Inject Style Cues</label>
                   <div style="display:flex; gap:0.5rem;">
                     <input type="text" class="input-styled" id="new-tag-input" style="flex:1" placeholder="E.g., volumetric lighting, detailed linework">
                     <button class="btn-primary" id="btn-add-tag" style="padding:0.75rem 1.25rem;">Add</button>
@@ -143,7 +143,7 @@
               <div class="prompt-composer-card" style="margin-top:auto;">
                 <div class="prompt-composer-title">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:14px; height:14px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 00.495-7.467 5.99 5.99 0 00-1.925 3.546 5.974 5.974 0 01-2.133-1A3.75 3.75 0 0012 18z" /></svg>
-                  Active Prompt Preview Formula
+                  <span data-i18n="prompt_formula">Active Prompt Preview Formula</span>
                 </div>
                 <div class="prompt-text-display" id="prompt-preview-text">
                   <!-- Auto-updated on preference shifts -->
@@ -153,7 +153,7 @@
                 </div>
               </div>
               
-              <button class="btn-primary" id="btn-save-preferences" style="margin-top: 1rem; width:100%; justify-content:center;">Save Preference Profile</button>
+              <button class="btn-primary" id="btn-save-preferences" style="margin-top: 1rem; width:100%; justify-content:center;" data-i18n="save_pref_btn">Save Preference Profile</button>
             </div>
           </div>
         </div>
@@ -162,23 +162,23 @@
       <!-- 3. TIMELINE GALLERY TAB -->
       <section id="gallery-tab" class="tab-content" aria-labelledby="nav-btn-gallery">
         <div class="gallery-filter-bar">
-          <h2 class="font-title" style="font-size:1.8rem; font-weight:800;">Art Journal Archives</h2>
+          <h2 class="font-title" style="font-size:1.8rem; font-weight:800;" data-i18n="archive_title">Art Journal Archives</h2>
           
           <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
             <div style="display:flex; gap:0.5rem; align-items:center;">
-              <label for="gallery-project-filter" style="font-size:0.85rem; font-weight:700; color:var(--text-muted)">Project:</label>
+              <label for="gallery-project-filter" style="font-size:0.85rem; font-weight:700; color:var(--text-muted);" data-i18n="project_filter">Project:</label>
               <select class="select-styled" id="gallery-project-filter" style="padding:0.4rem 1rem; font-size:0.85rem;">
-                <option value="all">All Projects</option>
+                <option value="all" data-i18n="all_projects">All Projects</option>
                 <!-- Options populated dynamically -->
               </select>
             </div>
             <div style="display:flex; gap:0.5rem; align-items:center;">
-              <label for="gallery-rating-filter" style="font-size:0.85rem; font-weight:700; color:var(--text-muted)">Filter Reviews:</label>
+              <label for="gallery-rating-filter" style="font-size:0.85rem; font-weight:700; color:var(--text-muted);" data-i18n="rating_filter">Filter Reviews:</label>
               <select class="select-styled" id="gallery-rating-filter" style="padding:0.4rem 1rem; font-size:0.85rem;">
-                <option value="all">Show All Days</option>
-                <option value="5">Excellent (5★ only)</option>
-                <option value="4">Highly Rated (4★ and above)</option>
-                <option value="3">Approved Only (3★ and above)</option>
+                <option value="all" data-i18n="show_all_days">Show All Days</option>
+                <option value="5" data-i18n="excellent_5">Excellent (5★ only)</option>
+                <option value="4" data-i18n="highly_rated_4">Highly Rated (4★ and above)</option>
+                <option value="3" data-i18n="approved_3">Approved Only (3★ and above)</option>
               </select>
             </div>
           </div>
@@ -191,36 +191,45 @@
 
       <!-- 4. SETTINGS TAB -->
       <section id="settings-tab" class="tab-content" aria-labelledby="nav-btn-settings">
-        <h2 class="font-title" style="font-size:1.8rem; font-weight:800; margin-bottom:1.5rem;">System Configuration & Integrations</h2>
+        <h2 class="font-title" style="font-size:1.8rem; font-weight:800; margin-bottom:1.5rem;" data-i18n="settings_title">System Configuration & Integrations</h2>
         
         <div class="glass-card">
           <div class="settings-form">
+            <!-- Language selection -->
             <div class="form-group">
-              <label for="settings-mode-select">AI Image Generation Mode</label>
+              <label for="settings-language-select" data-i18n="sys_lang">System Language</label>
+              <select class="select-styled" id="settings-language-select">
+                <option value="en">English (英文)</option>
+                <option value="zh">繁體中文 (Traditional Chinese)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="settings-mode-select" data-i18n="gen_mode">AI Image Generation Mode</label>
               <select class="select-styled" id="settings-mode-select">
-                <option value="mock">Offline Mock Mode (No Key / Free Simulation)</option>
-                <option value="huggingface">Hugging Face Inference API (Free Real-Time Generation)</option>
-                <option value="openai">OpenAI DALL-E 3 API (Paid High-Quality Rendering)</option>
+                <option value="mock" data-i18n="mode_mock">Offline Mock Mode (No Key / Free Simulation)</option>
+                <option value="huggingface" data-i18n="mode_hf">Hugging Face Inference API (Free Real-Time Generation)</option>
+                <option value="openai" data-i18n="mode_openai">OpenAI DALL-E 3 API (Paid High-Quality Rendering)</option>
               </select>
             </div>
             
             <div class="form-group" id="api-key-group" style="display:none;">
-              <label for="settings-apikey-input">API Authentication Token</label>
+              <label for="settings-apikey-input" data-i18n="auth_token">API Authentication Token</label>
               <input type="password" class="input-styled" id="settings-apikey-input" placeholder="Paste your API key here (saved locally in your browser)">
             </div>
             
             <div class="form-group" id="api-model-group" style="display:none;">
-              <label for="settings-model-input">Hugging Face Repository Model Path</label>
+              <label for="settings-model-input" data-i18n="hf_path">Hugging Face Repository Model Path</label>
               <input type="text" class="input-styled" id="settings-model-input" placeholder="E.g., black-forest-labs/FLUX.1-schnell">
             </div>
             
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
               <div class="form-group">
-                <label for="settings-schedule-time">Daily Generation Time</label>
+                <label for="settings-schedule-time" data-i18n="gen_time">Daily Generation Time</label>
                 <input type="time" class="input-styled" id="settings-schedule-time">
               </div>
               <div class="form-group">
-                <label for="settings-notify-time">Morning Notify Time</label>
+                <label for="settings-notify-time" data-i18n="notify_time">Morning Notify Time</label>
                 <input type="time" class="input-styled" id="settings-notify-time">
               </div>
             </div>
@@ -228,19 +237,19 @@
             <div style="border-top:1px dashed rgba(255,255,255,0.08); padding-top:1.5rem; margin-top:1rem;">
               <h3 class="font-title" style="font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--accent-cyan); display:flex; align-items:center; gap:0.5rem;">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
-                Mobile Phone Push Notifications (Telegram Setup)
+                <span data-i18n="tg_push">Mobile Phone Push Notifications (Telegram Setup)</span>
               </h3>
-              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5;">
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5;" data-i18n="tg_push_desc">
                 You can push newly generated artworks directly to your Telegram chat each morning. To setup, create a bot via <a href="https://t.me/BotFather" target="_blank" style="color:var(--accent-cyan)">@BotFather</a> and fetch your user Chat ID via <a href="https://t.me/userinfobot" target="_blank" style="color:var(--accent-cyan)">@userinfobot</a>.
               </p>
               
               <div style="display:grid; grid-template-columns:1.5fr 1fr; gap:1rem;">
                 <div class="form-group">
-                  <label for="settings-tg-bot-token">Telegram Bot Token (HTTP API)</label>
+                  <label for="settings-tg-bot-token" data-i18n="tg_token">Telegram Bot Token (HTTP API)</label>
                   <input type="password" class="input-styled" id="settings-tg-bot-token" placeholder="E.g., 784382029:AAFj28dkaJSD...">
                 </div>
                 <div class="form-group">
-                  <label for="settings-tg-chat-id">Telegram Chat ID</label>
+                  <label for="settings-tg-chat-id" data-i18n="tg_chat">Telegram Chat ID</label>
                   <input type="text" class="input-styled" id="settings-tg-chat-id" placeholder="E.g., 83920193">
                 </div>
               </div>
@@ -249,23 +258,23 @@
             <div style="border-top:1px dashed rgba(255,255,255,0.08); padding-top:1.5rem; margin-top:1rem;">
               <h3 class="font-title" style="font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--accent-purple); display:flex; align-items:center; gap:0.5rem;">
                 <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
-                Cloud Daily Generation Settings
+                <span data-i18n="cloud_settings">Cloud Daily Generation Settings</span>
               </h3>
-              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5;">
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem; line-height:1.5;" data-i18n="cloud_settings_desc">
                 Select which sub-projects you want to activate for the automated daily cloud generation, then download <code>config.json</code> and commit it to your repository.
               </p>
               
               <div class="form-group">
-                <label>Active Cloud Projects</label>
+                <label data-i18n="active_cloud">Active Cloud Projects</label>
                 <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1rem; margin-top:0.5rem;" id="settings-active-projects-checkboxes">
                   <!-- Toggles generated by JS -->
                 </div>
               </div>
               
               <div class="form-group" style="margin-top: 1.5rem;">
-                <label for="settings-github-pat">GitHub Personal Access Token (PAT) — Optional</label>
+                <label for="settings-github-pat" data-i18n="github_pat">GitHub Personal Access Token (PAT) — Optional</label>
                 <input type="password" class="input-styled" id="settings-github-pat" placeholder="ghp_... or github_pat_... (For automatic background sync to GitHub)">
-                <span style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem; display:block; line-height:1.4;">
+                <span style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem; display:block; line-height:1.4;" data-i18n="github_pat_desc">
                   Enter a token to enable <strong>automatic background synchronization</strong>. Create a fine-grained token with <code>Contents: Write</code> permissions on your <code>atg_artist</code> repository.
                 </span>
               </div>
@@ -273,15 +282,15 @@
               <div style="margin-top:1.5rem; display:flex; gap:1rem; align-items:center;">
                 <button type="button" class="btn-utility" id="btn-download-config" style="padding:0.6rem 1.2rem; font-size:0.85rem; display:flex; align-items:center; gap:0.5rem;">
                   <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:16px; height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
-                  Download config.json
+                  <span data-i18n="download_config_btn">Download config.json</span>
                 </button>
-                <span style="font-size:0.8rem; color:var(--text-muted)">Place this file in your project folder to sync with GitHub Actions.</span>
+                <span style="font-size:0.8rem; color:var(--text-muted)" data-i18n="download_config_desc">Place this file in your project folder to sync with GitHub Actions.</span>
               </div>
             </div>
             
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2rem; border-top:1px solid rgba(255,255,255,0.05); padding-top:1.5rem;">
-              <button class="btn-primary" id="btn-save-settings">Save System Settings</button>
-              <button class="btn-choice reject" id="btn-clear-database" style="flex:none; padding:0.8rem 1.5rem;">Reset App Data</button>
+              <button class="btn-primary" id="btn-save-settings" data-i18n="save_settings_btn">Save System Settings</button>
+              <button class="btn-choice reject" id="btn-clear-database" style="flex:none; padding:0.8rem 1.5rem;" data-i18n="reset_data_btn">Reset App Data</button>
             </div>
           </div>
         </div>
@@ -291,7 +300,7 @@
 
     <!-- Footer Area -->
     <footer>
-      <p>&copy; 2026 Aetheria AI Art Journal. Crafted for visual inspiration. Fully client-side encrypted storage.</p>
+      <p data-i18n="footer_text">&copy; 2026 Aetheria AI Art Journal. Crafted for visual inspiration. Fully client-side encrypted storage.</p>
     </footer>
     
   </div>
@@ -299,7 +308,7 @@
   <!-- A. DESKTOP/MOBILE NOTIFICATION BANNER -->
   <div class="notification-banner" id="notification-banner" role="alert">
     <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="width:20px; height:20px;"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
-    <p>A new daily masterpiece has materialized.</p>
+    <p data-i18n="alert_new_artwork">A new daily masterpiece has materialized.</p>
   </div>
 
   <!-- B. DETAILED GALLERY ITEM MODAL VIEW -->
