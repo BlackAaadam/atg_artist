@@ -2,8 +2,8 @@ name: Generate Daily AI Artwork
 
 on:
   schedule:
-    # 18:00 UTC is exactly 02:00 AM Taiwan/China Time (UTC+8)
-    - cron: '0 18 * * *'
+    # 00:00 UTC is exactly 08:00 AM Taiwan/China Time (UTC+8)
+    - cron: '0 0 * * *'
   workflow_dispatch: # Allows you to manually click "Run workflow" in GitHub Actions tab
 
 jobs:
@@ -43,6 +43,6 @@ jobs:
           if git diff --quiet && git diff --staged --quiet; then
             echo "No new artwork was generated (already exists for today)."
           else
-            git commit -m "auto(art): generate daily artwork for $(date +'%Y-%m-%d') [skip ci]"
+            git commit -m "auto(art): generate daily artwork for $(date +'%Y-%m-%d')"
             git push origin main
           fi
