@@ -24,7 +24,7 @@ const dateFormatted = d.toLocaleDateString("en-US", { month: 'short', day: 'nume
 
 // Load Configuration File (if it exists)
 let config = {
-  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration", "quote_card_background"],
+  activeProjects: ["poetic_editorial", "botanical_growth", "gift_relationship", "time_passage_threshold", "sacred_still_life"],
   notifyTime: "08:00"
 };
 
@@ -41,43 +41,43 @@ if (fs.existsSync(configPath)) {
 
 // Sub-Projects metadata
 const SUB_PROJECTS = [
-  { id: "ui_ux", name: "UI/UX Design" },
-  { id: "line_sticker", name: "LINE Sticker" },
-  { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
-  { id: "abstract_illustration", name: "Abstract Illustration" },
-  { id: "quote_card_background", name: "Quote Card Background" }
+  { id: "poetic_editorial", name: "Poetic Editorial Photography" },
+  { id: "botanical_growth", name: "Botanical Growth" },
+  { id: "gift_relationship", name: "Gift & Relationship" },
+  { id: "time_passage_threshold", name: "Time, Passage & Threshold" },
+  { id: "sacred_still_life", name: "Sacred Still Life" }
 ];
 
 const DEFAULT_PROJECT_PREFS = {
-  ui_ux: {
-    theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
-    activeStyles: ["Line Art Illustration"],
-    activePalettes: ["Neon / High Contrast"],
-    tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"]
+  poetic_editorial: {
+    theme: "A poetic image-only editorial photograph for a quiet literary and spiritual page. No text, no typography, no letters, no captions. Use refined photographic composition, gentle negative space, subtle matte paper texture, muted natural colors, and a calm contemplative atmosphere. The image should feel like a high-quality printed magazine spread, not a generic stock photo.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Ivory Paper / Muted Earth", "Soft Natural Editorial"],
+    tags: ["high resolution", "image-only", "no text", "no typography", "no letters", "no captions", "minimalist editorial photography", "poetic photography", "quiet composition", "magazine layout", "refined print atmosphere", "ivory negative space", "subtle paper grain", "soft natural light", "muted earth tones", "contemplative mood", "literary atmosphere", "spiritual calm"]
   },
-  line_sticker: {
-    theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
-    activeStyles: ["Studio Ghibli", "Line Art Illustration"],
-    activePalettes: ["Vibrant / Warm"],
-    tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"]
+  botanical_growth: {
+    theme: "An image-only poetic botanical photograph symbolizing growth, quiet resilience, renewal, and spiritual life. No text, no typography, no letters, no captions. Feature natural subjects such as moss, sprouts, leaves, roots, bark, small flowers, soil, stones, or plants emerging from unexpected places. The mood should feel gentle, hopeful, grounded, and contemplative.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Earth / Forest", "Warm Paper / Forest Green", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "botanical photography", "symbolic nature", "moss green", "forest green", "sprout", "leaves", "bark", "roots", "soil", "stone", "quiet growth", "resilience", "renewal", "hope", "spiritual mood", "soft morning light", "diffused natural light", "macro detail", "shallow depth of field", "matte paper texture", "refined print texture", "muted earth tones"]
   },
-  aesthetic_landscape: {
-    theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
-    activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"]
+  gift_relationship: {
+    theme: "A poetic image-only lifestyle still-life photograph symbolizing gift, exchange, companionship, and human connection. No text, no typography, no letters, no captions. Feature objects such as wrapped gifts, ribbons, hands preparing something, two cups, shared table scenes, paired objects, flowers, envelopes, cloth, or a quiet dining table. The image should feel warm, thoughtful, and refined.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print"],
+    activePalettes: ["Warm Paper / Forest Green", "Soft Natural Editorial", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "poetic still life", "lifestyle photography", "wrapped gift", "ribbon", "shared table", "two cups", "paired objects", "hands preparing", "quiet relationship", "companionship", "exchange", "gift", "care", "warm natural light", "soft shadows", "linen texture", "paper texture", "refined print atmosphere", "muted warm tones", "literary mood", "spiritual calm"]
   },
-  abstract_illustration: {
-    theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
-    activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"]
+  time_passage_threshold: {
+    theme: "An image-only poetic editorial photograph symbolizing time, passage, waiting, threshold, transition, and spiritual reflection. No text, no typography, no letters, no captions. Feature symbolic scenes such as clocks, doors, corridors, windows, paths, empty chairs, shadows on a wall, a quiet street, a doorway, or a passage of light. The mood should be calm, serious, contemplative, and emotionally resonant.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Monochrome / Dark", "Matte Cream / Ink Gray", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "symbolic photography", "time", "passage", "threshold", "waiting", "doorway", "corridor", "window light", "clock", "empty chair", "quiet path", "soft shadow", "contemplative atmosphere", "spiritual reflection", "muted gray tones", "warm ivory paper", "cinematic stillness", "refined editorial photography", "matte paper texture", "subtle grain", "poetic silence"]
   },
-  quote_card_background: {
-    theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
-    activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"]
+  sacred_still_life: {
+    theme: "A quiet image-only poetic still-life photograph with a sacred devotional mood. No text, no typography, no letters, no captions. Use simple symbolic objects such as a candle, cup, bowl, key, open notebook without readable writing, folded cloth, bread, lamp, stone, water, wooden table, or ceramic object. The image should feel peaceful, reverent, intimate, and suitable for spiritual reflection.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Ivory Paper / Muted Earth", "Soft Natural Editorial", "Warm Paper / Forest Green", "Matte Cream / Ink Gray"],
+    tags: ["high resolution", "image-only", "no text", "sacred still life", "devotional mood", "quiet object", "candle", "cup", "bowl", "key", "folded cloth", "bread", "ceramic", "wooden table", "soft window light", "gentle shadow", "reverent atmosphere", "spiritual calm", "poetic stillness", "minimalist composition", "tactile paper grain", "matte print texture", "muted earth tones", "warm neutral background", "refined editorial photography"]
   }
 };
 
@@ -110,7 +110,7 @@ function sleep(ms) {
 
 // Helper to make HTTPS requests to Hugging Face with Retry & Cold Start handling
 async function callHuggingFace(promptText, retries = 5, delay = 8000) {
-  const model = "black-forest-labs/FLUX.1-schnell";
+  const model = config.model || "black-forest-labs/FLUX.1-schnell";
   const postData = JSON.stringify({ inputs: promptText });
 
   for (let i = 0; i < retries; i++) {

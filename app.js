@@ -184,7 +184,12 @@ const TRANSLATIONS = {
     alert_ref_added: "Reference image added successfully!",
     alert_ref_removed: "Reference image removed.",
     alert_enter_ref: "Please provide an image URL or upload a file first.",
-    alert_enter_desc: "Please enter a style description for this reference image."
+    alert_enter_desc: "Please enter a style description for this reference image.",
+    poetic_editorial: "Poetic Editorial Photography",
+    botanical_growth: "Botanical Growth",
+    gift_relationship: "Gift & Relationship",
+    time_passage_threshold: "Time, Passage & Threshold",
+    sacred_still_life: "Sacred Still Life"
   },
   zh: {
     logo_subtitle: "AI 每日畫廊日誌",
@@ -308,7 +313,12 @@ const TRANSLATIONS = {
     alert_ref_added: "參考圖片已成功新增！",
     alert_ref_removed: "參考圖片已移除。",
     alert_enter_ref: "請先輸入圖片網址或上傳檔案。",
-    alert_enter_desc: "請輸入此參考圖的風格特徵描述。"
+    alert_enter_desc: "請輸入此參考圖的風格特徵描述。",
+    poetic_editorial: "詩意雜誌風攝影",
+    botanical_growth: "植物生長",
+    gift_relationship: "禮物與關係",
+    time_passage_threshold: "時間、流逝與門檻",
+    sacred_still_life: "神聖靜物"
   }
 };
 
@@ -339,52 +349,52 @@ function applyLanguage() {
 
 // --- STATE MANAGEMENT ---
 const SUB_PROJECTS = [
-  { id: "ui_ux", name: "UI/UX Design" },
-  { id: "line_sticker", name: "LINE Sticker" },
-  { id: "aesthetic_landscape", name: "Aesthetic & Landscape" },
-  { id: "abstract_illustration", name: "Abstract Illustration" },
-  { id: "quote_card_background", name: "Quote Card Background" }
+  { id: "poetic_editorial", name: "Poetic Editorial Photography" },
+  { id: "botanical_growth", name: "Botanical Growth" },
+  { id: "gift_relationship", name: "Gift & Relationship" },
+  { id: "time_passage_threshold", name: "Time, Passage & Threshold" },
+  { id: "sacred_still_life", name: "Sacred Still Life" }
 ];
 
 const DEFAULT_PROJECT_PREFS = {
-  ui_ux: {
-    theme: "A modern smart home mobile app dashboard interface design, sleek minimalist dashboard, user interface, dark mode",
-    activeStyles: ["Line Art Illustration"],
-    activePalettes: ["Neon / High Contrast"],
-    tags: ["ui ux", "figma mockup", "user interface", "clean layout", "minimalist", "vector geometry", "glowing elements"],
-    excludedTags: ["photorealistic", "blurry", "messy"],
+  poetic_editorial: {
+    theme: "A poetic image-only editorial photograph for a quiet literary and spiritual page. No text, no typography, no letters, no captions. Use refined photographic composition, gentle negative space, subtle matte paper texture, muted natural colors, and a calm contemplative atmosphere. The image should feel like a high-quality printed magazine spread, not a generic stock photo.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Ivory Paper / Muted Earth", "Soft Natural Editorial"],
+    tags: ["high resolution", "image-only", "no text", "no typography", "no letters", "no captions", "minimalist editorial photography", "poetic photography", "quiet composition", "magazine layout", "refined print atmosphere", "ivory negative space", "subtle paper grain", "soft natural light", "muted earth tones", "contemplative mood", "literary atmosphere", "spiritual calm"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "deformed", "bad composition"],
     referenceImages: []
   },
-  line_sticker: {
-    theme: "A cute little red panda displaying a happy excited expression, chibi character, white background, sticker border",
-    activeStyles: ["Studio Ghibli", "Line Art Illustration"],
-    activePalettes: ["Vibrant / Warm"],
-    tags: ["sticker", "emoji", "bold outlines", "isolated character", "cute chibi", "flat colors", "cartoon style"],
-    excludedTags: ["shaded", "complex background", "photorealistic", "3d render"],
+  botanical_growth: {
+    theme: "An image-only poetic botanical photograph symbolizing growth, quiet resilience, renewal, and spiritual life. No text, no typography, no letters, no captions. Feature natural subjects such as moss, sprouts, leaves, roots, bark, small flowers, soil, stones, or plants emerging from unexpected places. The mood should feel gentle, hopeful, grounded, and contemplative.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Earth / Forest", "Warm Paper / Forest Green", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "botanical photography", "symbolic nature", "moss green", "forest green", "sprout", "leaves", "bark", "roots", "soil", "stone", "quiet growth", "resilience", "renewal", "hope", "spiritual mood", "soft morning light", "diffused natural light", "macro detail", "shallow depth of field", "matte paper texture", "refined print texture", "muted earth tones"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "deformed", "bad composition"],
     referenceImages: []
   },
-  aesthetic_landscape: {
-    theme: "A quiet foggy lake in the mountains at sunrise, pine trees silhouette, hipster aesthetic style photo, vintage warm filter",
-    activeStyles: ["Oil Impressionism", "Cosmic Surrealism"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["hipster style", "aesthetic photography", "analogue film grain", "warm nostalgic tones", "vsco look", "minimalist nature", "soft lighting"],
-    excludedTags: ["ugly", "deformed", "cyberpunk", "high contrast neon"],
+  gift_relationship: {
+    theme: "A poetic image-only lifestyle still-life photograph symbolizing gift, exchange, companionship, and human connection. No text, no typography, no letters, no captions. Feature objects such as wrapped gifts, ribbons, hands preparing something, two cups, shared table scenes, paired objects, flowers, envelopes, cloth, or a quiet dining table. The image should feel warm, thoughtful, and refined.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print"],
+    activePalettes: ["Warm Paper / Forest Green", "Soft Natural Editorial", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "poetic still life", "lifestyle photography", "wrapped gift", "ribbon", "shared table", "two cups", "paired objects", "hands preparing", "quiet relationship", "companionship", "exchange", "gift", "care", "warm natural light", "soft shadows", "linen texture", "paper texture", "refined print atmosphere", "muted warm tones", "literary mood", "spiritual calm"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "deformed", "bad composition"],
     referenceImages: []
   },
-  abstract_illustration: {
-    theme: "A dreamlike cosmic landscape with floating crystals and geometric portals, pastel clouds",
-    activeStyles: ["Cosmic Surrealism", "Cyberpunk Watercolor"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["surreal illustration", "abstract portal", "dreamscape", "geometric shapes", "cosmic energy", "digital painting"],
-    excludedTags: ["ugly", "deformed", "real life"],
+  time_passage_threshold: {
+    theme: "An image-only poetic editorial photograph symbolizing time, passage, waiting, threshold, transition, and spiritual reflection. No text, no typography, no letters, no captions. Feature symbolic scenes such as clocks, doors, corridors, windows, paths, empty chairs, shadows on a wall, a quiet street, a doorway, or a passage of light. The mood should be calm, serious, contemplative, and emotionally resonant.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Japanese Magazine Layout", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Monochrome / Dark", "Matte Cream / Ink Gray", "Ivory Paper / Muted Earth"],
+    tags: ["high resolution", "image-only", "no text", "symbolic photography", "time", "passage", "threshold", "waiting", "doorway", "corridor", "window light", "clock", "empty chair", "quiet path", "soft shadow", "contemplative atmosphere", "spiritual reflection", "muted gray tones", "warm ivory paper", "cinematic stillness", "refined editorial photography", "matte paper texture", "subtle grain", "poetic silence"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "deformed", "bad composition"],
     referenceImages: []
   },
-  quote_card_background: {
-    theme: "An artistic minimalist abstract background for a quote card, textured canvas, subtle gradient color flow, copy space, elegant composition",
-    activeStyles: ["Oil Impressionism", "Cyberpunk Watercolor"],
-    activePalettes: ["Pastel / Cosmic"],
-    tags: ["quote background", "abstract canvas", "copy space", "minimalist art", "textured background", "soft pastel gradient", "artistic wallpaper"],
-    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "ugly", "deformed", "photorealistic", "busy composition"],
+  sacred_still_life: {
+    theme: "A quiet image-only poetic still-life photograph with a sacred devotional mood. No text, no typography, no letters, no captions. Use simple symbolic objects such as a candle, cup, bowl, key, open notebook without readable writing, folded cloth, bread, lamp, stone, water, wooden table, or ceramic object. The image should feel peaceful, reverent, intimate, and suitable for spiritual reflection.",
+    activeStyles: ["Minimalist Editorial Photography", "Poetic Photo Essay", "Matte Paper Print", "Minimalist Ink"],
+    activePalettes: ["Ivory Paper / Muted Earth", "Soft Natural Editorial", "Warm Paper / Forest Green", "Matte Cream / Ink Gray"],
+    tags: ["high resolution", "image-only", "no text", "sacred still life", "devotional mood", "quiet object", "candle", "cup", "bowl", "key", "folded cloth", "bread", "ceramic", "wooden table", "soft window light", "gentle shadow", "reverent atmosphere", "spiritual calm", "poetic stillness", "minimalist composition", "tactile paper grain", "matte print texture", "muted earth tones", "warm neutral background", "refined editorial photography"],
+    excludedTags: ["text", "words", "letters", "signatures", "watermarks", "deformed", "bad composition"],
     referenceImages: []
   }
 };
@@ -397,13 +407,13 @@ const DEFAULT_SETTINGS = {
   notifyTime: "08:00",
   telegramBotToken: "",
   telegramChatId: "",
-  activeProjects: ["ui_ux", "line_sticker", "aesthetic_landscape", "abstract_illustration", "quote_card_background"],
+  activeProjects: ["poetic_editorial", "botanical_growth", "gift_relationship", "time_passage_threshold", "sacred_still_life"],
   githubPat: "",
   language: "en"
 };
 
 let appState = {
-  activeProject: "ui_ux",
+  activeProject: "poetic_editorial",
   projectPrefs: { ...DEFAULT_PROJECT_PREFS },
   settings: { ...DEFAULT_SETTINGS },
   get preferences() {
@@ -452,7 +462,7 @@ function populateProjectSelectors() {
   const prefSelect = document.getElementById("preferences-project-select");
   const galleryFilter = document.getElementById("gallery-project-filter");
   
-  const optionsHtml = SUB_PROJECTS.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
+  const optionsHtml = SUB_PROJECTS.map(p => `<option value="${p.id}">${t(p.id)}</option>`).join("");
   
   dashSelect.innerHTML = optionsHtml;
   prefSelect.innerHTML = optionsHtml;
@@ -499,11 +509,31 @@ function updateTodayGenerationRef() {
 // Load preferences, settings, and metadata list from localStorage
 function loadDataFromStorage() {
   const savedActiveProject = localStorage.getItem("aetheria_active_project");
-  if (savedActiveProject) appState.activeProject = savedActiveProject;
+  const subProjIds = SUB_PROJECTS.map(p => p.id);
+  
+  if (savedActiveProject && subProjIds.includes(savedActiveProject)) {
+    appState.activeProject = savedActiveProject;
+  } else {
+    appState.activeProject = SUB_PROJECTS[0].id;
+  }
 
   const savedProjectPrefs = localStorage.getItem("aetheria_project_prefs");
   if (savedProjectPrefs) {
-    appState.projectPrefs = JSON.parse(savedProjectPrefs);
+    try {
+      const parsedPrefs = JSON.parse(savedProjectPrefs);
+      appState.projectPrefs = {};
+      SUB_PROJECTS.forEach(p => {
+        if (parsedPrefs[p.id]) {
+          appState.projectPrefs[p.id] = parsedPrefs[p.id];
+        } else {
+          appState.projectPrefs[p.id] = { ...DEFAULT_PROJECT_PREFS[p.id] };
+        }
+      });
+    } catch (e) {
+      console.error("Failed to parse project preferences", e);
+      appState.projectPrefs = { ...DEFAULT_PROJECT_PREFS };
+    }
+    
     // Initialize referenceImages array and activePalettes if missing (migration)
     for (const projId in appState.projectPrefs) {
       if (!appState.projectPrefs[projId].referenceImages) {
@@ -519,29 +549,23 @@ function loadDataFromStorage() {
       }
     }
   } else {
-    // Check if there is an old format single aetheria_prefs we can migrate
-    const savedPrefs = localStorage.getItem("aetheria_prefs");
-    if (savedPrefs) {
-      try {
-        const legacyPrefs = JSON.parse(savedPrefs);
-        const legacyPal = legacyPrefs.activePalettes || (legacyPrefs.activePalette ? [legacyPrefs.activePalette] : ["Pastel / Cosmic"]);
-        // Migrate it to the current active project preference as starting point
-        appState.projectPrefs[appState.activeProject] = {
-          theme: legacyPrefs.theme || appState.projectPrefs[appState.activeProject].theme,
-          activeStyles: legacyPrefs.activeStyles || appState.projectPrefs[appState.activeProject].activeStyles,
-          activePalettes: legacyPal,
-          tags: legacyPrefs.tags || appState.projectPrefs[appState.activeProject].tags,
-          excludedTags: legacyPrefs.excludedTags || appState.projectPrefs[appState.activeProject].excludedTags
-        };
-      } catch (e) {
-        console.error("Failed to migrate legacy preferences", e);
-      }
-    }
+    appState.projectPrefs = { ...DEFAULT_PROJECT_PREFS };
   }
 
   const savedSettings = localStorage.getItem("aetheria_settings");
   if (savedSettings) {
-    appState.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
+    try {
+      appState.settings = { ...DEFAULT_SETTINGS, ...JSON.parse(savedSettings) };
+      // Filter active projects to only contain existing sub-project IDs
+      appState.settings.activeProjects = appState.settings.activeProjects.filter(id => subProjIds.includes(id));
+      if (appState.settings.activeProjects.length === 0) {
+        appState.settings.activeProjects = [SUB_PROJECTS[0].id];
+      }
+    } catch (e) {
+      appState.settings = { ...DEFAULT_SETTINGS };
+    }
+  } else {
+    appState.settings = { ...DEFAULT_SETTINGS };
   }
 
   const savedHistory = localStorage.getItem("aetheria_history");
@@ -574,14 +598,7 @@ function loadDataFromStorage() {
   // Backwards compatibility migration: ensure all items have a project key
   appState.history.forEach(item => {
     if (!item.project) {
-      // Guess project from style
-      if (item.style === "Studio Ghibli") {
-        item.project = "line_sticker";
-      } else if (item.style === "Cosmic Surrealism" || item.style === "Surrealism") {
-        item.project = "abstract_illustration";
-      } else {
-        item.project = "aesthetic_landscape";
-      }
+      item.project = "poetic_editorial";
     }
   });
   
@@ -1544,7 +1561,7 @@ function setupSettingsTab() {
     return `
       <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; font-size:0.9rem;">
         <input type="checkbox" value="${proj.id}" class="settings-proj-checkbox" ${isActive ? 'checked' : ''}>
-        ${proj.name}
+        ${t(proj.id)}
       </label>
     `;
   }).join("");
@@ -1811,7 +1828,8 @@ function downloadImage(title, src) {
 function downloadConfigFile() {
   const configObj = {
     activeProjects: appState.settings.activeProjects,
-    notifyTime: appState.settings.notifyTime
+    notifyTime: appState.settings.notifyTime,
+    model: appState.settings.model
   };
   const jsonStr = JSON.stringify(configObj, null, 2);
   const blob = new Blob([jsonStr], { type: "application/json" });
@@ -1842,6 +1860,7 @@ async function syncConfigToGitHub() {
   const configObj = {
     activeProjects: appState.settings.activeProjects,
     notifyTime: appState.settings.notifyTime,
+    model: appState.settings.model,
     projectPrefs: appState.projectPrefs
   };
   const jsonStr = JSON.stringify(configObj, null, 2);
