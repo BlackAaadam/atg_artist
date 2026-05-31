@@ -721,6 +721,11 @@ function constructDailyPrompt() {
       promptParts.push(`referencing style elements of ${refDescs.join(", ")}`);
     }
   }
+
+  // Recent feedback/memorandum injection
+  if (prefs.recentFeedback && prefs.recentFeedback.trim().length > 0) {
+    promptParts.push(`incorporating visual style instructions: ${prefs.recentFeedback.trim()}`);
+  }
   
   // Concat and clean
   return promptParts.join(", ").replace(/\s+/g, ' ').trim();
@@ -1251,6 +1256,10 @@ function submitReview() {
     saveHistory();
     appState.todayGeneration = appState.history[index];
     
+    // Update active project preferences with recent feedback
+    appState.preferences.recentFeedback = textFeedback;
+    localStorage.setItem("aetheria_project_prefs", JSON.stringify(appState.projectPrefs));
+    
     // Refresh dashboard layout to reflect finalized review state
     renderDashboard();
     renderGallery();
@@ -1259,6 +1268,11 @@ function submitReview() {
     // Reset state values
     selectedRating = 0;
     selectedVerdict = null;
+
+    // Sync to GitHub if PAT is configured
+    if (appState.settings.githubPat) {
+      syncConfigToGitHub();
+    }
   }
 }
 

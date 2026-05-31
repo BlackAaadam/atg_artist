@@ -96,6 +96,11 @@ function synthesizePrompt(prefs) {
   ];
   if (tagsStr) parts.push(tagsStr);
   
+  // Recent feedback/memorandum injection
+  if (prefs.recentFeedback && prefs.recentFeedback.trim().length > 0) {
+    parts.push(`incorporating visual style instructions: ${prefs.recentFeedback.trim()}`);
+  }
+  
   return {
     prompt: parts.join(", ").replace(/\s+/g, ' ').trim(),
     style: chosenStyle,
