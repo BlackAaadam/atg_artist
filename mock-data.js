@@ -3,6 +3,61 @@
 
 window.MOCK_DATA = [
   {
+      "id": "gen-sacred_still_life-2026-06-10",
+      "project": "sacred_still_life",
+      "date": "2026-06-10",
+      "title": "Sacred Still Life #0610",
+      "prompt": "A quiet image-only poetic still-life photograph with a sacred devotional mood. No text, no typography, no letters, no captions. Use simple symbolic objects such as a candle, cup, bowl, key, open notebook without readable writing, folded cloth, bread, lamp, stone, water, wooden table, or ceramic object. The image should feel peaceful, reverent, intimate, and suitable for spiritual reflection., rendered in Minimalist Ink style, with a Soft Natural Editorial color palette, high resolution, image-only, no text, sacred still life, devotional mood, quiet object, candle, cup, bowl, key, folded cloth, bread, ceramic, wooden table, soft window light, gentle shadow, reverent atmosphere, spiritual calm, poetic stillness, minimalist composition, tactile paper grain, matte print texture, muted earth tones, warm neutral background, refined editorial photography",
+      "imagePath": "assets/generations/daily_sacred_still_life_2026-06-10.png",
+      "style": "Minimalist Ink",
+      "palette": "Soft Natural Editorial",
+      "dateFormatted": "Jun 10, 2026"
+  },
+  {
+      "id": "gen-time_passage_threshold-2026-06-10",
+      "project": "time_passage_threshold",
+      "date": "2026-06-10",
+      "title": "Time, Passage & Threshold #0610",
+      "prompt": "An image-only poetic editorial photograph symbolizing time, passage, waiting, threshold, transition, and spiritual reflection. No text, no typography, no letters, no captions. Feature symbolic scenes such as clocks, doors, corridors, windows, paths, empty chairs, shadows on a wall, a quiet street, a doorway, or a passage of light. The mood should be calm, serious, contemplative, and emotionally resonant., rendered in Minimalist Ink style, with a Monochrome / Dark color palette, high resolution, image-only, no text, symbolic photography, time, passage, threshold, waiting, doorway, corridor, window light, clock, empty chair, quiet path, soft shadow, contemplative atmosphere, spiritual reflection, muted gray tones, warm ivory paper, cinematic stillness, refined editorial photography, matte paper texture, subtle grain, poetic silence",
+      "imagePath": "assets/generations/daily_time_passage_threshold_2026-06-10.png",
+      "style": "Minimalist Ink",
+      "palette": "Monochrome / Dark",
+      "dateFormatted": "Jun 10, 2026"
+  },
+  {
+      "id": "gen-gift_relationship-2026-06-10",
+      "project": "gift_relationship",
+      "date": "2026-06-10",
+      "title": "Gift & Relationship #0610",
+      "prompt": "A poetic image-only lifestyle still-life photograph symbolizing gift, exchange, companionship, and human connection. No text, no typography, no letters, no captions. Feature objects such as wrapped gifts, ribbons, hands preparing something, two cups, shared table scenes, paired objects, flowers, envelopes, cloth, or a quiet dining table. The image should feel warm, thoughtful, and refined., rendered in Japanese Magazine Layout style, with a Warm Paper / Forest Green color palette, high resolution, image-only, no text, poetic still life, lifestyle photography, wrapped gift, ribbon, shared table, two cups, paired objects, hands preparing, quiet relationship, companionship, exchange, gift, care, warm natural light, soft shadows, linen texture, paper texture, refined print atmosphere, muted warm tones, literary mood, spiritual calm",
+      "imagePath": "assets/generations/daily_gift_relationship_2026-06-10.png",
+      "style": "Japanese Magazine Layout",
+      "palette": "Warm Paper / Forest Green",
+      "dateFormatted": "Jun 10, 2026"
+  },
+  {
+      "id": "gen-botanical_growth-2026-06-10",
+      "project": "botanical_growth",
+      "date": "2026-06-10",
+      "title": "Botanical Growth #0610",
+      "prompt": "An image-only poetic botanical photograph symbolizing growth, quiet resilience, renewal, and spiritual life. No text, no typography, no letters, no captions. Feature natural subjects such as moss, sprouts, leaves, roots, bark, small flowers, soil, stones, or plants emerging from unexpected places. The mood should feel gentle, hopeful, grounded, and contemplative., rendered in Minimalist Ink style, with a Earth / Forest color palette, high resolution, image-only, no text, botanical photography, symbolic nature, moss green, forest green, sprout, leaves, bark, roots, soil, stone, quiet growth, resilience, renewal, hope, spiritual mood, soft morning light, diffused natural light, macro detail, shallow depth of field, matte paper texture, refined print texture, muted earth tones",
+      "imagePath": "assets/generations/daily_botanical_growth_2026-06-10.png",
+      "style": "Minimalist Ink",
+      "palette": "Earth / Forest",
+      "dateFormatted": "Jun 10, 2026"
+  },
+  {
+      "id": "gen-poetic_editorial-2026-06-10",
+      "project": "poetic_editorial",
+      "date": "2026-06-10",
+      "title": "Poetic Editorial Photography #0610",
+      "prompt": "A poetic image-only editorial photograph for a quiet literary and spiritual page. No text, no typography, no letters, no captions. Use refined photographic composition, gentle negative space, subtle matte paper texture, muted natural colors, and a calm contemplative atmosphere. The image should feel like a high-quality printed magazine spread, not a generic stock photo., rendered in Matte Paper Print style, with a Ivory Paper / Muted Earth color palette, high resolution, image-only, no text, no typography, no letters, no captions, minimalist editorial photography, poetic photography, quiet composition, magazine layout, refined print atmosphere, ivory negative space, subtle paper grain, soft natural light, muted earth tones, contemplative mood, literary atmosphere, spiritual calm",
+      "imagePath": "assets/generations/daily_poetic_editorial_2026-06-10.png",
+      "style": "Matte Paper Print",
+      "palette": "Ivory Paper / Muted Earth",
+      "dateFormatted": "Jun 10, 2026"
+  },
+  {
       "id": "gen-sacred_still_life-2026-06-09",
       "project": "sacred_still_life",
       "date": "2026-06-09",
