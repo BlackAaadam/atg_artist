@@ -1,11 +1,5 @@
 {
-  "activeProjects": [
-    "poetic_editorial",
-    "botanical_growth",
-    "gift_relationship",
-    "time_passage_threshold",
-    "sacred_still_life"
-  ],
+  "activeProjects": [],
   "notifyTime": "08:00",
   "model": "black-forest-labs/FLUX.1-schnell",
   "projectPrefs": {
